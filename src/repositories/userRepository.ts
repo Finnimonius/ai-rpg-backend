@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { getDataBase } from "../config/database";
 import { User } from "../models/User";
 import { CreateUserDto } from "../dtos/CreateUserDto";
@@ -33,3 +32,5 @@ export class UserRepository {
         return result
     }
 }
+
+export const userRepository = new UserRepository();
