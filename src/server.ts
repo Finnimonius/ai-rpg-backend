@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import aiRoutes from './routes/aiRoutes';
+import authRoutes from './routes/authRoutes';
 import { config, validateConfig } from './config/env';
 import { connectToDatabase } from './config/database';
 
@@ -12,6 +13,7 @@ const PORT = config.server.port; // Получаем порт из конфиг�
 app.use(cors())
 app.use(express.json());
 app.use('/api/ai', aiRoutes); // Подключаем маршруты по префиксу /api/ai
+app.use('/api/auth', authRoutes);
 
 async function startServer() {
     try {
