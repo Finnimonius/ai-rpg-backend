@@ -2,6 +2,7 @@ import { CreateUserDto } from "../dtos/CreateUserDto";
 import { User } from "../models/User";
 import { userRepository } from "../repositories/userRepository";
 import bcrypt from 'bcrypt';
+import { jwtService } from "./jwtService";
 
 export const userService = {
     async register(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
@@ -25,21 +26,32 @@ export const userService = {
         return userWithoutPassword
     },
 
-    async login(email: string, password: string): Promise<Omit<User, 'password'>>{
+    async login(email: string, password: string): Promise<{
+        user: Omit<User, 'password'>;
+        token: string;
+    }> {
         const user = await userRepository.findByEmail(email);
 
-        if(!user) {
-            throw new Error("Пользователь с таким email уже существует");
+        if (!user) {
+            throw new Error("Пользователь с таким email не найден");
         }
 
-        const isPasswordValid = bcrypt.compare(password, user.password)
+        const isPasswordValid = await bcrypt.compare(password, user.password)
 
-        if(!isPasswordValid) {
+        if (!isPasswordValid) {
             throw new Error("Неверный пароль");
         }
 
         const { password: _, ...userWithoutPassword } = user;
 
-        return userWithoutPassword
+        const token = jwtService.generateToken({
+            userId: user._id!,
+            email: user.email
+        })
+
+        return {
+            user: userWithoutPassword,
+            token: token
+        };
     }
 }

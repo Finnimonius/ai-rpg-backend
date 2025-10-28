@@ -49,11 +49,12 @@ export const userController = {
                 })
             }
 
-            const user = await userService.login(email, password);
+            const {user, token} = await userService.login(email, password);
 
             res.status(200).json({
                 message: 'Авторизация прошла успешно',
                 user: user,
+                token: token
             })
         } catch (error) {
             console.error('Ошибка авторизации', error)

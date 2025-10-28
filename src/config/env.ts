@@ -20,6 +20,10 @@ export const config = {
     },
     mongodb: {
         uri: getEnvVariable('MONGODB_URI')
+    },
+    jwt: {
+        secret: getEnvVariable('JWT_SECRET'),
+        expiresIn: '7d'
     }
 }
 
