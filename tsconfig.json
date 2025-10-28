@@ -10,5 +10,7 @@
     "rootDir": "./src",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }
