@@ -1,6 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { jwtService } from '../services/jwtService';
 
+export interface AuthenticatedRequest extends Request {
+    user?: {
+        userId: string;
+        email: string;
+    };
+}
+
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
         const authHeader = req.headers.authorization;
@@ -21,7 +28,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
 
         const userData = jwtService.verifyToken(token);
 
-        req.user = userData;
+        (req as AuthenticatedRequest).user = userData;
 
         next()
 

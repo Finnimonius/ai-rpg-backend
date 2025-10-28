@@ -31,6 +31,14 @@ export class UserRepository {
 
         return result
     }
+
+    async findById(userId: string): Promise<User | null> {
+        const collection = this.getCollection()
+
+        const result = await collection.findOne({_id: userId})
+
+        return result
+    }
 }
 
 export const userRepository = new UserRepository();

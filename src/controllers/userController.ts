@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { userService } from '../services/userService';
 import { CreateUserDto } from '../dtos/CreateUserDto';
+import { userRepository } from '../repositories/userRepository';
+import { AuthenticatedRequest } from '../middleware/authMiddleware';
 
 export const userController = {
     async register(req: Request, res: Response) {
@@ -49,7 +51,7 @@ export const userController = {
                 })
             }
 
-            const {user, token} = await userService.login(email, password);
+            const { user, token } = await userService.login(email, password);
 
             res.status(200).json({
                 message: 'Авторизация прошла успешно',
@@ -71,6 +73,37 @@ export const userController = {
                 }
             }
 
+            return res.status(500).json({
+                error: 'Внутренняя ошибка сервера'
+            });
+        }
+    },
+
+    async getProfile(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.userId;
+
+            if (!userId) {
+                return res.status(401).json({
+                    error: 'Пользователь не авторизован'
+                })
+            }
+
+            const user = await userRepository.findById(userId);
+
+            if(!user) {
+                return res.status(404).json({
+                    error: 'Пользователь не найден'
+                })
+            }
+
+            const { password, ...userWithoutPassword } = user;
+
+            res.status(200).json({
+                user: userWithoutPassword
+            })
+        } catch (error) {
+            console.error('Ошибка получения профиля:', error);
             return res.status(500).json({
                 error: 'Внутренняя ошибка сервера'
             });
