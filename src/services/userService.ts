@@ -12,13 +12,15 @@ export const userService = {
             throw new Error("Пользователь с таким email уже существует");
         }
 
+        const { confirmPassword, ...userDataForDb } = userData;
+
         const saltRounds = 10; // Сложность хеширования
         const hashedPassword = await bcrypt.hash(userData.password, saltRounds)
 
         const user = await userRepository.createUser({
             nickName: userData.nickName,
             email: userData.email,
-            password: hashedPassword
+            password: hashedPassword,
         });
 
         const { password, ...userWithoutPassword } = user;

@@ -10,13 +10,6 @@ export const userController = {
             // 1. Получить данные из тела запроса
             const userData: CreateUserDto = req.body;
 
-            // Валидация обязательных полей
-            if (!userData.email || !userData.password || !userData.nickName) {
-                return res.status(400).json({
-                    error: 'Все поля обязательны для заполнения'
-                })
-            }
-
             const user = await userService.register(userData);
 
             res.status(201).json({
