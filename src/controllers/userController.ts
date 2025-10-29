@@ -43,13 +43,18 @@ export const userController = {
                     error: 'Email и пароль обязательны'
                 })
             }
-
             const { user, token } = await userService.login(email, password);
+
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000
+            });
 
             res.status(200).json({
                 message: 'Авторизация прошла успешно',
                 user: user,
-                token: token
             })
         } catch (error) {
             console.error('Ошибка авторизации', error)
@@ -72,6 +77,13 @@ export const userController = {
         }
     },
 
+    async logout(req: Request, res: Response) {
+        res.clearCookie('token');
+        res.status(200).json({
+            message: 'Выход выполнен успешно'
+        })
+    },
+
     async getProfile(req: AuthenticatedRequest, res: Response) {
         try {
             const userId = req.user?.userId;
@@ -84,7 +96,7 @@ export const userController = {
 
             const user = await userRepository.findById(userId);
 
-            if(!user) {
+            if (!user) {
                 return res.status(404).json({
                     error: 'Пользователь не найден'
                 })

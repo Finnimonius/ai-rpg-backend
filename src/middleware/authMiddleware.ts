@@ -10,20 +10,12 @@ export interface AuthenticatedRequest extends Request {
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     try {
-        const authHeader = req.headers.authorization;
+        const token = req.cookies.token;
 
-        if(!authHeader) {
+        if(!token) {
             return res.status(401).json({
                 error: 'Токен не предоставлен'
             });
-        }
-
-        const [bearer, token] = authHeader.split(' ');
-
-        if(bearer !== 'Bearer' || !token) {
-            return res.status(401).json({
-                error: 'Неверный формат'
-            })
         }
 
         const userData = jwtService.verifyToken(token);
