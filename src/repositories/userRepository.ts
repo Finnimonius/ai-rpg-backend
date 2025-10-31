@@ -43,7 +43,7 @@ export class UserRepository {
     }
 
     async updateUser(userId: string, updateData: { nickName?: string, email?: string }): Promise<User | null> {
-        const collection = this.getCollection()
+        const collection = this.getCollection();
         const objectId = toObjectId(userId);
 
         const result = await collection.findOneAndUpdate(
@@ -55,6 +55,23 @@ export class UserRepository {
                 }
             },
             { returnDocument: 'after' }
+        )
+        return result
+    }
+
+    async updatePassword(userId: string, newHashedPassword: string): Promise<User | null> {
+        const collection = this.getCollection();
+        const objectId = toObjectId(userId);
+
+        const result = await collection.findOneAndUpdate(
+            {_id: objectId},
+            {
+                $set: {
+                    password: newHashedPassword,
+                    updatedAt: new Date()
+                }
+            },
+            {returnDocument: 'after'}
         )
         return result
     }

@@ -4,6 +4,7 @@ import { userRepository } from "../repositories/userRepository";
 import bcrypt from 'bcrypt';
 import { jwtService } from "./jwtService";
 import { UpdateProfileDto } from "../dtos/UpdateProfileDto";
+import { ChangePasswordDto } from "../dtos/ChangePasswordDto";
 
 export const userService = {
     async register(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
@@ -76,5 +77,28 @@ export const userService = {
         const { password: _, ...userWithoutPassword } = user;
 
         return userWithoutPassword
+    },
+
+    async changePassword(userId: string, passwordData: ChangePasswordDto): Promise<void> {
+        const user = await userRepository.findById(userId);
+
+        if (!user) {
+            throw new Error("Пользователь с таким id не найден");
+        }
+
+        const isOldPassword = await bcrypt.compare(passwordData.oldPassword, user.password);
+        if (!isOldPassword) {
+            throw new Error('Неверный текущий пароль')
+        }
+
+        const isSamePassword = await bcrypt.compare(passwordData.newPassword, user.password);
+        if (isSamePassword) {
+            throw new Error("Новый пароль должен отличаться от старого");
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(passwordData.newPassword, saltRounds);
+
+        await userRepository.updatePassword(userId, hashedPassword);
     }
 }

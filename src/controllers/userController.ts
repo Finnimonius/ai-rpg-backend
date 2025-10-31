@@ -4,6 +4,7 @@ import { CreateUserDto } from '../dtos/CreateUserDto';
 import { userRepository } from '../repositories/userRepository';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
 import { UpdateProfileDto } from '../dtos/UpdateProfileDto';
+import { ChangePasswordDto } from '../dtos/ChangePasswordDto';
 
 export const userController = {
     async register(req: Request, res: Response) {
@@ -141,7 +142,46 @@ export const userController = {
                     });
                 }
             }
-            
+
+            return res.status(500).json({
+                error: 'Внутренняя ошибка сервера'
+            });
+        }
+    },
+
+    async changePassword(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.userId
+
+            if (!userId) {
+                return res.status(401).json({
+                    error: 'Пользователь не авторизован'
+                })
+            }
+            const updateData: ChangePasswordDto = req.body;
+            await userService.changePassword(userId, updateData)
+
+            res.status(200).json({
+                message: 'Пароль успешно изменен'
+            })
+        } catch (error) {
+
+            if (error instanceof Error) {
+                if (error.message.includes('Неверный текущий пароль')) {
+                    return res.status(400).json({
+                        error: error.message
+                    });
+                } else if (error.message.includes('должен отличаться')) {
+                    return res.status(400).json({
+                        error: error.message
+                    });
+                } else if (error.message.includes('не найден')) {
+                    return res.status(404).json({
+                        error: error.message
+                    });
+                }
+            }
+
             return res.status(500).json({
                 error: 'Внутренняя ошибка сервера'
             });

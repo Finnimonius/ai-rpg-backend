@@ -38,7 +38,7 @@ const registerSchema = Joi.object({
         }),
 
     confirmPassword: Joi.string()
-        .valid(Joi.ref('password')) // должно совпадать с password
+        .valid(Joi.ref('password'))
         .required()
         .messages({
             'any.only': 'Пароли не совпадают',
