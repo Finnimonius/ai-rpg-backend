@@ -3,6 +3,7 @@ import { User } from "../models/User";
 import { userRepository } from "../repositories/userRepository";
 import bcrypt from 'bcrypt';
 import { jwtService } from "./jwtService";
+import { UpdateProfileDto } from "../dtos/UpdateProfileDto";
 
 export const userService = {
     async register(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
@@ -47,7 +48,7 @@ export const userService = {
         const { password: _, ...userWithoutPassword } = user;
 
         const token = jwtService.generateToken({
-            userId: user._id!,
+            userId: user._id!.toString(),
             email: user.email
         })
 
@@ -55,5 +56,25 @@ export const userService = {
             user: userWithoutPassword,
             token: token
         };
+    },
+
+    async updateProfile(userId: string, updatedData: UpdateProfileDto): Promise<Omit<User, 'password'>> {
+        if (updatedData.email) {
+            const existingUser = await userRepository.findByEmail(updatedData.email);
+
+            if (existingUser && existingUser._id?.toString() !== userId) {
+                throw new Error("Пользователь с таким email уже существует");
+            }
+        }
+
+        const user = await userRepository.updateUser(userId, updatedData);
+
+        if (!user) {
+            throw new Error("Пользователь с таким email не найден");
+        }
+
+        const { password: _, ...userWithoutPassword } = user;
+
+        return userWithoutPassword
     }
 }

@@ -2,6 +2,19 @@ import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 
 const registerSchema = Joi.object({
+    nickName: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(30)
+        .required()
+        .messages({
+            'string.alphanum': 'Имя пользователя должно содержать только буквы и цифры',
+            'string.min': 'Имя пользователя должно содержать минимум 3 символа',
+            'string.max': 'Имя пользователя не должно превышать 30 символов',
+            'string.empty': 'Имя пользователя обязательно для заполнения',
+            'any.required': 'Имя пользователя обязательно для заполнения'
+        }),
+
     email: Joi.string()
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'ru', 'org'] } })
         .required()
@@ -32,18 +45,6 @@ const registerSchema = Joi.object({
             'any.required': 'Подтверждение пароля обязательно'
         }),
 
-    nickName: Joi.string()
-        .alphanum()
-        .min(3)
-        .max(30)
-        .required()
-        .messages({
-            'string.alphanum': 'Имя пользователя должно содержать только буквы и цифры',
-            'string.min': 'Имя пользователя должно содержать минимум 3 символа',
-            'string.max': 'Имя пользователя не должно превышать 30 символов',
-            'string.empty': 'Имя пользователя обязательно для заполнения',
-            'any.required': 'Имя пользователя обязательно для заполнения'
-        }),
 });
 
 export const authValidateRegister = (req: Request, res: Response, next: NextFunction) => {

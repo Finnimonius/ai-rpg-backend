@@ -3,6 +3,7 @@ import { userService } from '../services/userService';
 import { CreateUserDto } from '../dtos/CreateUserDto';
 import { userRepository } from '../repositories/userRepository';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
+import { UpdateProfileDto } from '../dtos/UpdateProfileDto';
 
 export const userController = {
     async register(req: Request, res: Response) {
@@ -109,6 +110,38 @@ export const userController = {
             })
         } catch (error) {
             console.error('Ошибка получения профиля:', error);
+            return res.status(500).json({
+                error: 'Внутренняя ошибка сервера'
+            });
+        }
+    },
+
+    async updateProfile(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.userId;
+
+            if (!userId) {
+                return res.status(401).json({
+                    error: 'Пользователь не авторизован'
+                })
+            }
+            const updateData: UpdateProfileDto = req.body;
+
+            const user = await userService.updateProfile(userId, updateData)
+
+            res.status(200).json({
+                message: 'Профиль успешно обновлён',
+                user: user
+            })
+        } catch (error) {
+            if (error instanceof Error) {
+                if (error.message.includes('уже существует')) {
+                    return res.status(409).json({
+                        error: error.message
+                    });
+                }
+            }
+            
             return res.status(500).json({
                 error: 'Внутренняя ошибка сервера'
             });

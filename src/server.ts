@@ -11,7 +11,10 @@ validateConfig()
 const app = express(); // Создаем экземпляр приложения Express
 const PORT = config.server.port; // Получаем порт из конфига
 
-app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true // разрешаем куки
+}))
 app.use(express.json());
 app.use(cookieParser());
 app.use('/api/ai', aiRoutes); // Подключаем маршруты по префиксу /api/ai
