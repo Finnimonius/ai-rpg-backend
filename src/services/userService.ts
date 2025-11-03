@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import { jwtService } from "./jwtService";
 import { UpdateProfileDto } from "../dtos/UpdateProfileDto";
 import { ChangePasswordDto } from "../dtos/ChangePasswordDto";
+import { UserRole } from "../types/role";
 
 export const userService = {
     async register(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
@@ -23,6 +24,7 @@ export const userService = {
             nickName: userData.nickName,
             email: userData.email,
             password: hashedPassword,
+            role: UserRole.USER,
         });
 
         const { password, ...userWithoutPassword } = user;
