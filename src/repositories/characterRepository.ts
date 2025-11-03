@@ -98,3 +98,5 @@ export class CharacterRepository {
         return result
     }
 }
+
+export const characterRepository = new CharacterRepository();
