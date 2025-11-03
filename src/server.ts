@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import aiRoutes from './routes/aiRoutes';
 import authRoutes from './routes/authRoutes';
+import characterRoutes from './routes/characterRoutes';
 import cookieParser from 'cookie-parser';
 import { config, validateConfig } from './config/env';
 import { connectToDatabase } from './config/database';
@@ -17,8 +18,9 @@ app.use(cors({
 }))
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api/ai', aiRoutes); // Подключаем маршруты по префиксу /api/ai
+app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/character', characterRoutes)
 
 async function startServer() {
     try {

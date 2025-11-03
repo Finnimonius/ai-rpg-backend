@@ -27,7 +27,7 @@ export class CharacterRepository {
         const collection = this.getCollection();
 
         const objectId = toObjectId(userId);
-        const result = await collection.findOne({ _id: objectId })
+        const result = await collection.findOne({ userId: objectId })
 
         return result
     }
