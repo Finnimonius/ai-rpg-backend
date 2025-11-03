@@ -1,5 +1,6 @@
 import { getDataBase } from "../config/database";
-import { Character, Equipment } from "../models/Character";
+import { Character } from "../models/Character";
+import { Equipment } from "../types/inventory.types";
 import { MongoId, toObjectId } from "../types/mongodb";
 
 const COLLECTION_NAME = 'characters';
