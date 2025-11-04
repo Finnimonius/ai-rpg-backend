@@ -59,3 +59,55 @@ export const calculateEquipmentStats = (equipment: Equipment, allItems: AnyItem[
 
     return result;
 };
+
+interface EquipResult {
+    canEquip: boolean;
+    reason?: 'wrong_type' | 'low_level' | 'success';
+}
+
+export const canEquipItem = (item: AnyItem, slot: keyof Equipment, level: number): EquipResult => {
+
+    const equippableTypes = ['weapon', 'armor', 'accessory'] as const;
+    if (!equippableTypes.includes(item.type as 'weapon' | 'armor' | 'accessory')) {
+        return { canEquip: false, reason: 'wrong_type' };
+    }
+
+    if (!('requiredLevel' in item)) {
+        return { canEquip: false, reason: 'wrong_type' };
+    }
+
+    if (item.requiredLevel && level < item.requiredLevel) {
+        return { canEquip: false, reason: 'low_level' };
+    }
+
+    switch (slot) {
+        case 'weapon_main':
+        case 'weapon_off':
+            if (item.type !== 'weapon') {
+                return { canEquip: false, reason: 'wrong_type' };
+            }
+            return { canEquip: true, reason: 'success' };
+        case 'helmet':
+        case 'chest':
+        case 'gloves':
+        case 'legs':
+        case 'boots':
+            if (item.type !== 'armor' || (item as Armor).slot !== slot) {
+                return { canEquip: false, reason: 'wrong_type' };
+            }
+            return { canEquip: true, reason: 'success' };
+        case 'ring_1':
+        case 'ring_2':
+            if (item.type !== 'accessory' || !(item as Accessory).slot?.startsWith('ring')) {
+                return { canEquip: false, reason: 'wrong_type' };
+            }
+            return { canEquip: true, reason: 'success' };
+        case 'amulet':
+            if (item.type !== 'accessory' || (item as Accessory).slot !== 'amulet') {
+                return { canEquip: false, reason: 'wrong_type' };
+            }
+            return { canEquip: true, reason: 'success' };
+        default:
+            return { canEquip: false, reason: 'wrong_type' };
+    }
+};

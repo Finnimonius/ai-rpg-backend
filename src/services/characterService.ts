@@ -3,15 +3,17 @@ import { CreateCharacterDto } from "../dtos/CreateCharacterDto";
 import { Character } from "../models/Character";
 import { CLASSES } from "../data/character/classes";
 import { getStartingEquipment, getStartingInventory } from "../utils/generators/items-bulder";
-import { calculateEquipmentStats } from "../utils/helpers/equipmentUtils";
+import { calculateEquipmentStats, canEquipItem } from "../utils/helpers/equipmentUtils";
 import { STARTER_ITEMS_ARRAY } from "../data/items/allItems";
 import { calculateDerivedStats } from "../utils/helpers/statsCalculator";
 import { characterRepository } from "../repositories/characterRepository";
+import { EquipItemDto } from "../dtos/EquipItemDto";
+import { itemService } from "./itemService";
 
 export const characterService = {
     async createCharacter(userId: string, createData: CreateCharacterDto) {
         const characterClass = CLASSES.find(c => c.id === createData.classId);
-        if(!characterClass) throw new Error("Класс не найден");
+        if (!characterClass) throw new Error("Класс не найден");
 
         const startingEquipment = getStartingEquipment(createData.classId);
         const startingInventory = getStartingInventory(createData.classId);
@@ -19,8 +21,8 @@ export const characterService = {
         const equipmentStats = calculateEquipmentStats(startingEquipment, STARTER_ITEMS_ARRAY);
 
         const derivedStats = calculateDerivedStats(characterClass.baseStats, equipmentStats, 1);
-        
-        
+
+
         const characterData: Character = {
             userId: new ObjectId(userId),
             classId: characterClass.id,
@@ -41,5 +43,28 @@ export const characterService = {
 
     async getCharacter(userId: string): Promise<Character | null> {
         return characterRepository.findByUserId(userId)
-    }
+    },
+
+    // async equipItem(userId: string, equipData: EquipItemDto): Promise<Character> {
+    //     const character = await characterRepository.findByUserId(userId);
+    //     if (!character) throw new Error("Персонаж не найден");
+
+    //     const inventorySlot = character.inventory[equipData.inventoryIndex];
+
+    //     if (!inventorySlot || !inventorySlot.itemId) {
+    //         throw new Error("Предмет не найден в инвентаре");
+    //     }
+
+    //     const item = itemService.getItemById(inventorySlot.itemId);
+
+    //     const canEquip = canEquipItem(item, equipData.equipmentSlot, character.level);
+    //     if(!canEquip) throw new Error(`Нельзя экипировать: ${canEquip.reason}`);
+
+    //     const currentEquppedItem = character.equipment[equipData.equipmentSlot];
+        
+    //     if(currentEquppedItem) {
+
+    //     }
+
+    // }
 }

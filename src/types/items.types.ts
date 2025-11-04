@@ -1,6 +1,6 @@
 import { BaseStats } from './character.types';
 
-export type ItemType = 'weapon' | 'armor' | 'accessory' | 'consumable';
+export type ItemType = 'weapon' | 'armor' | 'accessory' | 'consumable' | 'shopItem';
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type EquipmentSlot = 'helmet' | 'chest' | 'gloves' | 'legs' | 'boots' | 'ring' | 'amulet';
 
@@ -10,7 +10,7 @@ export interface Item {
     type: ItemType;
     rarity: Rarity;
     value: number;
-    requiredLevel: number;
+    requiredLevel?: number;
     stats?: Partial<BaseStats>; 
 }
 
@@ -41,4 +41,9 @@ export interface Consumable extends Item {
     };
 }
 
-export type AnyItem = Weapon | Armor | Accessory | Consumable;
+export interface ShopItem extends Item {
+    type: 'shopItem',
+    category: string;
+}
+
+export type AnyItem = Weapon | Armor | Accessory | Consumable | ShopItem;

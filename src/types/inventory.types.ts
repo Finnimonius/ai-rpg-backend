@@ -4,14 +4,14 @@ export interface InventorySlot {
 }
 
 export interface Equipment {
-    weapon_mainId: string | null;
-    weapon_offId: string | null;
-    helmetId: string | null;
-    chestId: string | null;
-    glovesId: string | null;
-    legsId: string | null;
-    bootsId: string | null;
-    ring_1Id: string | null;
-    ring_2Id: string | null;
-    amuletId: string | null;
+    weapon_main: string | null;
+    weapon_off: string | null;
+    helmet: string | null;
+    chest: string | null;
+    gloves: string | null;
+    legs: string | null;
+    boots: string | null;
+    ring_1: string | null;
+    ring_2: string | null;
+    amulet: string | null;
 }

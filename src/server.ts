@@ -13,7 +13,7 @@ const app = express(); // Создаем экземпляр приложения
 const PORT = config.server.port; // Получаем порт из конфига
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['http://localhost:5173', 'http://localhost:5174'],
     credentials: true // разрешаем куки
 }))
 app.use(express.json());

@@ -151,16 +151,16 @@ export const classConfigs: Record<ClassId, ClassConfig> = {
   // === СЕРЫЙ СТРАННИК ===
   grey_wanderer: {
     equipment: {
-      weapon_mainId: STARTER_WEAPONS.DAGGER.id,
-      weapon_offId: STARTER_WEAPONS.DAGGER.id,
-      helmetId: STARTER_ARMOR.LEATHER_CAP.id,
-      chestId: STARTER_ARMOR.LEATHER_ARMOR.id,
-      glovesId: STARTER_ARMOR.LEATHER_GLOVES.id,
-      legsId: STARTER_ARMOR.LEATHER_PANTS.id,
-      bootsId: STARTER_ARMOR.LEATHER_BOOTS.id,
-      ring_1Id: STARTER_ACCESORIES.SUN_RING.id,   
-      ring_2Id: STARTER_ACCESORIES.RING_WITH_SEAL.id,   
-      amuletId: STARTER_ACCESORIES.STORM_AMULET.id
+      weapon_main: STARTER_WEAPONS.DAGGER.id,
+      weapon_off: STARTER_WEAPONS.DAGGER.id,
+      helmet: STARTER_ARMOR.LEATHER_CAP.id,
+      chest: STARTER_ARMOR.LEATHER_ARMOR.id,
+      gloves: STARTER_ARMOR.LEATHER_GLOVES.id,
+      legs: STARTER_ARMOR.LEATHER_PANTS.id,
+      boots: STARTER_ARMOR.LEATHER_BOOTS.id,
+      ring_1: STARTER_ACCESORIES.SUN_RING.id,   
+      ring_2: STARTER_ACCESORIES.RING_WITH_SEAL.id,   
+      amulet: STARTER_ACCESORIES.STORM_AMULET.id
     },
     inventory: [
       { itemId: STARTER_CONSUMABLES.HEALTH_POTION.id, quantity: 5 },
