@@ -45,26 +45,40 @@ export const characterService = {
         return characterRepository.findByUserId(userId)
     },
 
-    // async equipItem(userId: string, equipData: EquipItemDto): Promise<Character> {
-    //     const character = await characterRepository.findByUserId(userId);
-    //     if (!character) throw new Error("Персонаж не найден");
+    async equipItem(userId: string, equipData: EquipItemDto): Promise<Character> {
+        const character = await characterRepository.findByUserId(userId);
+        if (!character) throw new Error("Персонаж не найден");
+        if (!character._id) throw new Error("ID персонажа не найден");
 
-    //     const inventorySlot = character.inventory[equipData.inventoryIndex];
+        const inventorySlot = character.inventory[equipData.inventoryIndex];
+        if (!inventorySlot || !inventorySlot.itemId) {
+            throw new Error("Предмет не найден в инвентаре");
+        }
 
-    //     if (!inventorySlot || !inventorySlot.itemId) {
-    //         throw new Error("Предмет не найден в инвентаре");
-    //     }
+        const item = itemService.getItemById(inventorySlot.itemId);
+        const canEquip = canEquipItem(item, equipData.equipmentSlot, character.level);
+        if (!canEquip.canEquip) throw new Error(`Нельзя экипировать: ${canEquip.reason}`);
 
-    //     const item = itemService.getItemById(inventorySlot.itemId);
+        const currentEquppedItem = character.equipment[equipData.equipmentSlot];
 
-    //     const canEquip = canEquipItem(item, equipData.equipmentSlot, character.level);
-    //     if(!canEquip) throw new Error(`Нельзя экипировать: ${canEquip.reason}`);
+        const updatedEquipment = { ...character.equipment };
+        const updatedInventory = [...character.inventory];
 
-    //     const currentEquppedItem = character.equipment[equipData.equipmentSlot];
-        
-    //     if(currentEquppedItem) {
+        updatedEquipment[equipData.equipmentSlot] = inventorySlot.itemId;
+        updatedInventory[equipData.inventoryIndex] = { itemId: null, quantity: 0 };
 
-    //     }
+        if (currentEquppedItem) {
+            const emptySlotIndex = character.inventory.findIndex(slot => !slot.itemId);
+            if (emptySlotIndex === -1) throw new Error("Нет свободного места в инвентаре");
+            updatedInventory[emptySlotIndex] = { itemId: currentEquppedItem, quantity: 1 };
+        }
 
-    // }
+        const updatedCharacter = await characterRepository.updateCharacter(character._id, {
+            equipment: updatedEquipment,
+            inventory: updatedInventory
+        });
+
+        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        return updatedCharacter;
+    }
 }
