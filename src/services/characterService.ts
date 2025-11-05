@@ -66,6 +66,14 @@ export const characterService = {
         return characterRepository.findByUserId(userId)
     },
 
+    async deleteCharacter(userId: string) {
+        const character = await characterRepository.findByUserId(userId);
+        if (!character) return false;
+        if (!character._id) return false;
+
+        return characterRepository.deleteCharacter(character._id)
+    },
+
     async equipItem(userId: string, equipData: EquipItemDto): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
         if (!character) throw new Error("Персонаж не найден");

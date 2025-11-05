@@ -51,6 +51,29 @@ export const characterController = {
         }
     },
 
+    async delete(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.userId;
+            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+
+            const deleted = await characterService.deleteCharacter(userId);
+
+            if (!deleted) {
+                return res.status(404).json({ error: 'Персонаж не найден' });
+            }
+
+            res.status(200).json({
+                message: 'Персонаж успешно удален',
+                deleted: true
+            });
+        } catch (error) {
+            console.error('Ошибка удаления персонажа:', error);
+            return res.status(500).json({
+                error: 'Внутренняя ошибка сервера'
+            });
+        }
+    },
+
     async equip(req: AuthenticatedRequest, res: Response) {
         try {
             const userId = req.user?.userId;

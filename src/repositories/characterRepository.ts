@@ -57,11 +57,7 @@ export class CharacterRepository {
             { _id: objectId }
         )
 
-        if (result) {
-            return true
-        }
-
-        return false
+        return result.deletedCount === 1;
     }
 
     async equipItem(characterId: MongoId, equipmentSlot: keyof Equipment, itemId: string): Promise<Character | null> {

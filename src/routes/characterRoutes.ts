@@ -12,5 +12,6 @@ router.post('/equip', authMiddleware, characterController.equip);
 router.post('/unequip', authMiddleware, characterController.unequip);
 router.post('/', authMiddleware, characterController.create);
 
+router.delete('/', authMiddleware, characterController.delete);
 
 export default router
