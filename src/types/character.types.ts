@@ -25,5 +25,4 @@ export interface DerivedStats {
 
 export interface ClassConfig {
     equipment: Equipment;
-    inventory: InventorySlot[];
 }

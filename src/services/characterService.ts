@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { CreateCharacterDto } from "../dtos/CreateCharacterDto";
 import { Character } from "../models/Character";
 import { CLASSES } from "../data/character/classes";
-import { getStartingEquipment, getStartingInventory } from "../utils/generators/items-bulder";
+import { getStartingEquipment } from "../utils/generators/items-bulder";
 import { calculateEquipmentStats, canEquipItem } from "../utils/helpers/equipmentUtils";
 import { STARTER_ITEMS_ARRAY } from "../data/items/allItems";
 import { calculateDerivedStats } from "../utils/helpers/statsCalculator";
@@ -13,6 +13,9 @@ import { UnequipItemDto } from "../dtos/UnequipItemDto";
 import { Equipment } from "../types/inventory.types";
 import { MoveItemDto } from "../dtos/MoveItemDto";
 import { SwapEquipmentDto } from "../dtos/SwapEquipmentDto";
+import { inventoryService } from "./invetory-service";
+import { GAME_CONFIG } from "../config/game-config";
+
 
 export const characterService = {
     async createCharacter(userId: string, createData: CreateCharacterDto) {
@@ -20,22 +23,36 @@ export const characterService = {
         if (!characterClass) throw new Error("Класс не найден");
 
         const startingEquipment = getStartingEquipment(createData.classId);
-        const startingInventory = getStartingInventory(createData.classId);
+        const startingInventory = inventoryService.createStarterInventory(createData.classId);
 
         const equipmentStats = calculateEquipmentStats(startingEquipment, STARTER_ITEMS_ARRAY);
 
-        const derivedStats = calculateDerivedStats(characterClass.baseStats, equipmentStats, 1);
+        const baseStats = { ...characterClass.baseStats };
+        const totalStats = {
+            strength: baseStats.strength + equipmentStats.stats.strength,
+            dexterity: baseStats.dexterity + equipmentStats.stats.dexterity,
+            intelligence: baseStats.intelligence + equipmentStats.stats.intelligence,
+            wisdom: baseStats.wisdom + equipmentStats.stats.wisdom,
+            constitution: baseStats.constitution + equipmentStats.stats.constitution,
+            luck: baseStats.luck + equipmentStats.stats.luck,
+        };
 
+        const derivedStats = calculateDerivedStats(totalStats, equipmentStats, GAME_CONFIG.STARTING_LEVEL);
 
         const characterData: Character = {
             userId: new ObjectId(userId),
             classId: characterClass.id,
             backgroundId: createData.backgroundId,
-            level: 1,
-            stats: characterClass.baseStats,
+            level: GAME_CONFIG.STARTING_LEVEL,
+            baseStats: baseStats,
+            stats: totalStats,
             derivedStats: derivedStats,
-            avaliableStatsPoints: 0,
-            currency: { gold: 100, souls: 0, fame: 0 },
+            avaliableStatsPoints: GAME_CONFIG.STARTING_STAT_POINTS,
+            currency: {
+                gold: GAME_CONFIG.STARTING_GOLD,
+                souls: 0,
+                fame: 0
+            },
             craftingMaterials: { wood: 0, ore: 0, leather: 0, herbs: 0, crystals: 0, relics: 0 },
             inventory: startingInventory,
             equipment: startingEquipment,
@@ -77,9 +94,22 @@ export const characterService = {
             updatedInventory[emptySlotIndex] = { itemId: currentEquppedItem, quantity: 1 };
         }
 
+        const equipmentStats = calculateEquipmentStats(updatedEquipment, STARTER_ITEMS_ARRAY);
+        const totalStats = {
+            strength: character.baseStats.strength + equipmentStats.stats.strength,
+            dexterity: character.baseStats.dexterity + equipmentStats.stats.dexterity,
+            intelligence: character.baseStats.intelligence + equipmentStats.stats.intelligence,
+            wisdom: character.baseStats.wisdom + equipmentStats.stats.wisdom,
+            constitution: character.baseStats.constitution + equipmentStats.stats.constitution,
+            luck: character.baseStats.luck + equipmentStats.stats.luck,
+        };
+        const derivedStats = calculateDerivedStats(totalStats, equipmentStats, character.level);
+
         const updatedCharacter = await characterRepository.updateCharacter(character._id, {
             equipment: updatedEquipment,
-            inventory: updatedInventory
+            inventory: updatedInventory,
+            stats: totalStats,
+            derivedStats: derivedStats
         });
 
         if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
@@ -94,22 +124,41 @@ export const characterService = {
         const equippedItemId = character.equipment[unequipData.equipmentSlot];
         if (!equippedItemId) throw new Error("В слоте нет предмета");
 
-        const emptySlotIndex = character.inventory.findIndex(slot => !slot.itemId);
-        if (emptySlotIndex === -1) throw new Error("Нет свободного места в инвентаре");
+        if (unequipData.inventoryIndex < 0 || unequipData.inventoryIndex >= character.inventory.length) {
+            throw new Error("Неверный индекс инвентаря");
+        }
+
+        const targetSlot = character.inventory[unequipData.inventoryIndex];
+        if (targetSlot.itemId) {
+            throw new Error("Целевой слот инвентаря занят");
+        }
 
         const updatedEquipment = { ...character.equipment };
         const updatedInventory = [...character.inventory];
 
         updatedEquipment[unequipData.equipmentSlot as keyof Equipment] = null;
 
-        updatedInventory[emptySlotIndex] = {
+        updatedInventory[unequipData.inventoryIndex] = {
             itemId: equippedItemId,
             quantity: 1
         };
 
+        const equipmentStats = calculateEquipmentStats(updatedEquipment, STARTER_ITEMS_ARRAY);
+        const totalStats = {
+            strength: character.baseStats.strength + equipmentStats.stats.strength,
+            dexterity: character.baseStats.dexterity + equipmentStats.stats.dexterity,
+            intelligence: character.baseStats.intelligence + equipmentStats.stats.intelligence,
+            wisdom: character.baseStats.wisdom + equipmentStats.stats.wisdom,
+            constitution: character.baseStats.constitution + equipmentStats.stats.constitution,
+            luck: character.baseStats.luck + equipmentStats.stats.luck,
+        };
+        const derivedStats = calculateDerivedStats(totalStats, equipmentStats, character.level);
+
         const updatedCharacter = await characterRepository.updateCharacter(character._id, {
             equipment: updatedEquipment,
-            inventory: updatedInventory
+            inventory: updatedInventory,
+            stats: totalStats,
+            derivedStats: derivedStats
         });
 
         if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
@@ -172,8 +221,21 @@ export const characterService = {
         updatedEquipment[swapData.fromSlot] = updatedEquipment[swapData.toSlot];
         updatedEquipment[swapData.toSlot] = temp;
 
+        const equipmentStats = calculateEquipmentStats(updatedEquipment, STARTER_ITEMS_ARRAY);
+        const totalStats = {
+            strength: character.baseStats.strength + equipmentStats.stats.strength,
+            dexterity: character.baseStats.dexterity + equipmentStats.stats.dexterity,
+            intelligence: character.baseStats.intelligence + equipmentStats.stats.intelligence,
+            wisdom: character.baseStats.wisdom + equipmentStats.stats.wisdom,
+            constitution: character.baseStats.constitution + equipmentStats.stats.constitution,
+            luck: character.baseStats.luck + equipmentStats.stats.luck,
+        };
+        const derivedStats = calculateDerivedStats(totalStats, equipmentStats, character.level);
+
         const updatedCharacter = await characterRepository.updateCharacter(character._id, {
-            equipment: updatedEquipment
+            equipment: updatedEquipment,
+            stats: totalStats,
+            derivedStats: derivedStats
         });
 
         if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");

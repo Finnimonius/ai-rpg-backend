@@ -148,7 +148,6 @@ export const STARTER_CONSUMABLES = {
 };
 
 export const classConfigs: Record<ClassId, ClassConfig> = {
-  // === СЕРЫЙ СТРАННИК ===
   grey_wanderer: {
     equipment: {
       weapon_main: STARTER_WEAPONS.DAGGER.id,
@@ -162,10 +161,5 @@ export const classConfigs: Record<ClassId, ClassConfig> = {
       ring_2: STARTER_ACCESORIES.RING_WITH_SEAL.id,   
       amulet: STARTER_ACCESORIES.STORM_AMULET.id
     },
-    inventory: [
-      { itemId: STARTER_CONSUMABLES.HEALTH_POTION.id, quantity: 5 },
-      { itemId: STARTER_CONSUMABLES.MANA_POTION.id, quantity: 3 },
-      { itemId: STARTER_CONSUMABLES.BASIC_FOOD.id, quantity: 10 }
-    ]
   },
 };
