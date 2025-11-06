@@ -4,14 +4,17 @@ import { characterController } from "../controllers/characterController";
 
 const router = Router();
 
+// Character
 router.get('/', authMiddleware, characterController.get);
+router.post('/', authMiddleware, characterController.create);
+router.delete('/', authMiddleware, characterController.delete);
 
-router.post('/move-inventory', authMiddleware, characterController.moveInventory);
-router.post('/swap-equipment', authMiddleware, characterController.swapEquipment);
+//Equipment
 router.post('/equip', authMiddleware, characterController.equip);
 router.post('/unequip', authMiddleware, characterController.unequip);
-router.post('/', authMiddleware, characterController.create);
+router.post('/move-inventory', authMiddleware, characterController.moveInventory);
+router.post('/swap-equipment', authMiddleware, characterController.swapEquipment);
+router.post('/add-to-inventory', authMiddleware, characterController.addItemToInventory);
 
-router.delete('/', authMiddleware, characterController.delete);
 
 export default router

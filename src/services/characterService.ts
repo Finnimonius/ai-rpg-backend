@@ -15,6 +15,7 @@ import { MoveItemDto } from "../dtos/MoveItemDto";
 import { SwapEquipmentDto } from "../dtos/SwapEquipmentDto";
 import { inventoryService } from "./invetory-service";
 import { GAME_CONFIG } from "../config/game-config";
+import { AddItemToInventory } from "../dtos/AddItemToOnventoryDto";
 
 
 export const characterService = {
@@ -248,5 +249,30 @@ export const characterService = {
 
         if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
         return updatedCharacter;
+    },
+
+    async addItemToInventory(userId: string, itemData: AddItemToInventory): Promise<Character> {
+        const character = await characterRepository.findByUserId(userId);
+        if (!character) throw new Error("Персонаж не найден");
+        if (!character._id) throw new Error("ID персонажа не найден");
+
+        const emptySlotIndex = character.inventory.findIndex(item => !item.itemId);
+
+        if(emptySlotIndex === -1) {
+            throw new Error("Нет свободного места в инвентаре");
+        }
+
+        const updatedInventory = [...character.inventory];
+        updatedInventory[emptySlotIndex] = {
+            itemId: itemData.itemId,
+            quantity: itemData.quantity || 1
+        }
+
+        const updatedCharacter = await characterRepository.updateCharacter(character._id, {
+            inventory: updatedInventory
+        })
+
+        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        return updatedCharacter
     }
 }

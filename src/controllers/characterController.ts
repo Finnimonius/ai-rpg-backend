@@ -6,6 +6,7 @@ import { EquipItemDto } from '../dtos/EquipItemDto';
 import { UnequipItemDto } from '../dtos/UnequipItemDto';
 import { MoveItemDto } from '../dtos/MoveItemDto';
 import { SwapEquipmentDto } from '../dtos/SwapEquipmentDto';
+import { AddItemToInventory } from '../dtos/AddItemToOnventoryDto';
 
 export const characterController = {
     async create(req: AuthenticatedRequest, res: Response) {
@@ -199,7 +200,6 @@ export const characterController = {
 
             const swapData: SwapEquipmentDto = req.body;
 
-            // Валидация
             if (!swapData.fromSlot || !swapData.toSlot) {
                 return res.status(400).json({ error: 'Неверные данные запроса' });
             }
@@ -226,6 +226,44 @@ export const characterController = {
                     return res.status(400).json({ error: error.message });
                 }
             }
+            return res.status(500).json(
+                { error: 'Внутренняя ошибка сервера' }
+            );
+        }
+    },
+
+    async addItemToInventory(req: AuthenticatedRequest, res: Response) {
+        try {
+            const userId = req.user?.userId;
+            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+
+            const itemData: AddItemToInventory = req.body;
+
+            if (!itemData.itemId || !itemData.quantity) {
+                return res.status(400).json({ error: 'Неверные данные запроса' });
+            }
+
+            const character = await characterService.addItemToInventory(userId, itemData);
+
+            res.status(200).json({
+                message: 'Предмет добавлен в инвентарь',
+                character: character
+            })
+        } catch (error) {
+            console.error('Ошибка получения предмета:', error);
+
+            if (error instanceof Error) {
+                if (error.message.includes('Не авторизован')) {
+                    return res.status(401).json({ error: error.message });
+                }
+                if (error.message.includes('не найден')) {
+                    return res.status(404).json({ error: error.message });
+                }
+                if (error.message.includes('Нет свободного')) {
+                    return res.status(400).json({ error: error.message });
+                }
+            }
+
             return res.status(500).json(
                 { error: 'Внутренняя ошибка сервера' }
             );
