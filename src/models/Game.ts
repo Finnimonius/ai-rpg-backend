@@ -13,7 +13,8 @@ export interface Game {
     userId: ObjectId,
     currentDungeon: string,
     currentLocation: string,
-    targetLocation: string,
+    currentLocationName: string,
+    targetLocation: string | null,
     currentSteps: number,
     gameHistory: GameHistory[]
 }

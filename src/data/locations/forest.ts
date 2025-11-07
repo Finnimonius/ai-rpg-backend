@@ -1,5 +1,5 @@
-export const FOREST_LOCATION = {
-  wind_gorge: {
+export const FOREST_LOCATION = [
+  {
     id: "wind_gorge",
     name: "Ущелье Ветров",
     description: "Вы стоите на краю глубокого ущелья. Ветер свистит между скал.",
@@ -16,8 +16,7 @@ export const FOREST_LOCATION = {
       }
     ]
   },
-  
-  forgotten_path: {
+  {
     id: "forgotten_path", 
     name: "Забытая Тропа",
     description: "Старая заросшая тропа. Кажется, здесь давно никто не ходил.",
@@ -29,8 +28,7 @@ export const FOREST_LOCATION = {
       }
     ]
   },
-  
-  moon_lake: {
+  {
     id: "moon_lake",
     name: "Озеро Лунного Света", 
     description: "Кристально чистое озеро отражает луну. Вода кажется волшебной.",
@@ -42,4 +40,4 @@ export const FOREST_LOCATION = {
       }
     ]
   }
-}
+];
