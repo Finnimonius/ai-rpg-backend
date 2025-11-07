@@ -15,7 +15,7 @@ import { MoveItemDto } from "../dtos/MoveItemDto";
 import { SwapEquipmentDto } from "../dtos/SwapEquipmentDto";
 import { inventoryService } from "./invetory-service";
 import { GAME_CONFIG } from "../config/game-config";
-import { AddItemToInventory } from "../dtos/AddItemToOnventoryDto";
+import { AddItemToInventory } from "../dtos/AddItemToInventoryDto";
 
 
 export const characterService = {

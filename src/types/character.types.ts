@@ -1,4 +1,4 @@
-import { Equipment, InventorySlot } from "./inventory.types";
+import { Equipment } from "./inventory.types";
 
 export type ClassId = 'grey_wanderer';
 

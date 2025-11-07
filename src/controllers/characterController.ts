@@ -6,7 +6,7 @@ import { EquipItemDto } from '../dtos/EquipItemDto';
 import { UnequipItemDto } from '../dtos/UnequipItemDto';
 import { MoveItemDto } from '../dtos/MoveItemDto';
 import { SwapEquipmentDto } from '../dtos/SwapEquipmentDto';
-import { AddItemToInventory } from '../dtos/AddItemToOnventoryDto';
+import { AddItemToInventory } from '../dtos/AddItemToInventoryDto';
 
 export const characterController = {
     async create(req: AuthenticatedRequest, res: Response) {
