@@ -1,4 +1,5 @@
-import { ClassId } from "../types/character.types";
+import { ClassId } from "../../types/character.types";
+
 
 export interface CreateCharacterDto {
     classId: ClassId,

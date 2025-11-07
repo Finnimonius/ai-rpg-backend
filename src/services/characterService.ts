@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { CreateCharacterDto } from "../dtos/CreateCharacterDto";
+import { CreateCharacterDto } from "../dtos/character/CreateCharacterDto";
 import { Character } from "../models/Character";
 import { CLASSES } from "../data/character/classes";
 import { getStartingEquipment } from "../utils/generators/items-bulder";
@@ -7,15 +7,15 @@ import { calculateEquipmentStats, canEquipItem } from "../utils/helpers/equipmen
 import { STARTER_ITEMS_ARRAY } from "../data/items/allItems";
 import { calculateDerivedStats } from "../utils/helpers/statsCalculator";
 import { characterRepository } from "../repositories/characterRepository";
-import { EquipItemDto } from "../dtos/EquipItemDto";
+import { EquipItemDto } from "../dtos/character/EquipItemDto";
 import { itemService } from "./itemService";
-import { UnequipItemDto } from "../dtos/UnequipItemDto";
+import { UnequipItemDto } from "../dtos/character/UnequipItemDto";
 import { Equipment } from "../types/inventory.types";
-import { MoveItemDto } from "../dtos/MoveItemDto";
-import { SwapEquipmentDto } from "../dtos/SwapEquipmentDto";
+import { MoveItemDto } from "../dtos/character/MoveItemDto";
+import { SwapEquipmentDto } from "../dtos/character/SwapEquipmentDto";
 import { inventoryService } from "./invetory-service";
 import { GAME_CONFIG } from "../config/game-config";
-import { AddItemToInventory } from "../dtos/AddItemToInventoryDto";
+import { AddItemToInventory } from "../dtos/character/AddItemToInventoryDto";
 
 
 export const characterService = {

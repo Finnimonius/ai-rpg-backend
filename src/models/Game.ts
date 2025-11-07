@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb';
 
-type CurrentDungeon = 'forest' | 'desert';
 type Directions = 'south' | 'southeast' | 'southwest' | 'west' | 'north' | 'northwest' | 'northeast';
 
 type GameHistory = {
@@ -12,7 +11,7 @@ type GameHistory = {
 export interface Game {
     _id: ObjectId,
     userId: ObjectId,
-    currentDungeon: CurrentDungeon,
+    currentDungeon: string,
     currentLocation: string,
     targetLocation: string,
     currentSteps: number,

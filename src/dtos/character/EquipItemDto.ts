@@ -1,4 +1,4 @@
-import { Equipment } from "../types/inventory.types";
+import { Equipment } from "../../types/inventory.types";
 
 export interface EquipItemDto {
     inventoryIndex: number,

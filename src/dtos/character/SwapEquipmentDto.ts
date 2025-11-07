@@ -1,4 +1,4 @@
-import { Equipment } from "../types/inventory.types";
+import { Equipment } from "../../types/inventory.types";
 
 export interface SwapEquipmentDto {
   fromSlot: keyof Equipment;

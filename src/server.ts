@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import aiRoutes from './routes/aiRoutes';
 import authRoutes from './routes/authRoutes';
+import gameRoutes from './routes/gameRoutes';
 import characterRoutes from './routes/characterRoutes';
 import cookieParser from 'cookie-parser';
 import { config, validateConfig } from './config/env';
@@ -20,7 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/character', characterRoutes)
+app.use('/api/character', characterRoutes);
+app.use('/api/game', gameRoutes)
 
 async function startServer() {
     try {

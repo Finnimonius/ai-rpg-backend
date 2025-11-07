@@ -1,12 +1,12 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
-import { CreateCharacterDto } from '../dtos/CreateCharacterDto';
+import { CreateCharacterDto } from '../dtos/character/CreateCharacterDto';
 import { characterService } from '../services/characterService';
-import { EquipItemDto } from '../dtos/EquipItemDto';
-import { UnequipItemDto } from '../dtos/UnequipItemDto';
-import { MoveItemDto } from '../dtos/MoveItemDto';
-import { SwapEquipmentDto } from '../dtos/SwapEquipmentDto';
-import { AddItemToInventory } from '../dtos/AddItemToInventoryDto';
+import { EquipItemDto } from '../dtos/character/EquipItemDto';
+import { UnequipItemDto } from '../dtos/character/UnequipItemDto';
+import { MoveItemDto } from '../dtos/character/MoveItemDto';
+import { SwapEquipmentDto } from '../dtos/character/SwapEquipmentDto';
+import { AddItemToInventory } from '../dtos/character/AddItemToInventoryDto';
 
 export const characterController = {
     async create(req: AuthenticatedRequest, res: Response) {
