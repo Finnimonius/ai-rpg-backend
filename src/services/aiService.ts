@@ -1,7 +1,7 @@
 import { config } from "../config/env";
 
 export const aiService = {
-    async generateText(prompt: string, temperature: number = 0.7, maxTokens: number = 300) {
+    async generateText(prompt: string, temperature: number = 0.7, maxTokens: number = 250) {
         try {
             const response = await fetch('https://llm.api.cloud.yandex.net/foundationModels/v1/completion', {
                 method: 'POST',

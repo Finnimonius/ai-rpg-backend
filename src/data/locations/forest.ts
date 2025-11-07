@@ -4,40 +4,43 @@ export const FOREST_LOCATION = [
     name: "Ущелье Ветров",
     description: "Вы стоите на краю глубокого ущелья. Ветер свистит между скал.",
     paths: [
-      { 
+      {
         direction: "south",
-        directionName: "Юг", 
-        targetLocationId: "forgotten_path", 
+        directionName: "Юг",
+        targetLocationId: "forgotten_path",
       },
-      { 
+      {
         direction: "southeast",
-        directionName: "Юго-восток",  
-        targetLocationId: "moon_lake", 
+        directionName: "Юго-восток",
+        targetLocationId: "moon_lake",
       }
-    ]
+    ],
+    event: null
   },
   {
-    id: "forgotten_path", 
+    id: "forgotten_path",
     name: "Забытая Тропа",
     description: "Старая заросшая тропа. Кажется, здесь давно никто не ходил.",
     paths: [
-      { 
+      {
         direction: "north",
-        directionName: "Север", 
-        targetLocationId: "wind_gorge", 
+        directionName: "Север",
+        targetLocationId: "wind_gorge",
       }
-    ]
+    ],
+    event: null
   },
   {
     id: "moon_lake",
-    name: "Озеро Лунного Света", 
+    name: "Озеро Лунного Света",
     description: "Кристально чистое озеро отражает луну. Вода кажется волшебной.",
     paths: [
-      { 
+      {
         direction: "northwest",
-        directionName: "Северо-запад", 
-        targetLocationId: "wind_gorge", 
+        directionName: "Северо-запад",
+        targetLocationId: "wind_gorge",
       }
-    ]
+    ],
+    event: null
   }
-];
+] as const;
