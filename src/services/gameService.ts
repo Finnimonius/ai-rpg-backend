@@ -38,5 +38,9 @@ export const gameService = {
         }
 
         return gameRepository.createGame(gameData);
+    },
+
+    async getGame(userId: string): Promise<Game | null> {
+        return gameRepository.findGameById(userId)
     }
 }

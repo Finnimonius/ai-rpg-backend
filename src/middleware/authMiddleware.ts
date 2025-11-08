@@ -23,7 +23,6 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
         (req as AuthenticatedRequest).user = userData;
 
         next()
-
     } catch (error) {
         console.error('Ошибка аутентификации:', error);
         

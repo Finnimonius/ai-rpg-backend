@@ -13,7 +13,7 @@ import { UnequipItemDto } from "../dtos/character/UnequipItemDto";
 import { Equipment } from "../types/inventory.types";
 import { MoveItemDto } from "../dtos/character/MoveItemDto";
 import { SwapEquipmentDto } from "../dtos/character/SwapEquipmentDto";
-import { inventoryService } from "./invetory-service";
+import { inventoryService } from "./invetoryService";
 import { GAME_CONFIG } from "../config/game-config";
 import { AddItemToInventory } from "../dtos/character/AddItemToInventoryDto";
 
