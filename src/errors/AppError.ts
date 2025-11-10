@@ -45,3 +45,9 @@ export class UnauthorizedError extends AppError {
         super(message, 401, message);
     }
 }
+
+export class AiServiceError extends AppError {
+    constructor(message: string = 'Ошибка AI сервиса') {
+        super(message, 503, 'Сервис AI временно недоступен');
+    }
+}

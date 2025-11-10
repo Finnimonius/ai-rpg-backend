@@ -5,11 +5,12 @@ import { Game } from "../models/Game";
 import { aiService } from "./aiService";
 import { GameHistory } from "../types/game.types";
 import { gameRepository } from "../repositories/gameRepository";
+import { NotFoundError } from "../errors/AppError";
 
 export const gameService = {
     async createGame(userId: string, createData: CreateGameDto) {
         const dungeon = ALL_LOCATIONS[createData.currentDungeon];
-        if (!dungeon) throw new Error("Подземелье не найдено");
+        if (!dungeon) throw new NotFoundError("Подземелье");
 
         const currentDungeon = createData.currentDungeon;
         const startingLocation = dungeon[0]
