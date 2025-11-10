@@ -25,6 +25,21 @@ export const gameController = {
         if (!game) return res.status(404).json({ error: 'Игра не найдена' });
 
         res.status(200).json({ game })
+    },
 
+    async deleteGame(req: AuthenticatedRequest, res: Response) {
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+
+        const deleted = await gameService.deleteGame(userId);
+
+        if (!deleted) {
+            return res.status(404).json({ error: 'Игра не найдена' });
+        }
+
+        res.status(200).json({
+            message: 'Игра успешно удалена',
+            deleted: true
+        });
     }
 }

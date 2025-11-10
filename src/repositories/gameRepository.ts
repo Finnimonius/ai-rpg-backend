@@ -22,13 +22,24 @@ export class GameRepository {
         return createdGame
     }
 
-    async findGameById(userId: MongoId) {
+    async findGameById(userId: MongoId): Promise<Game | null> {
         const collection = this.getCollection();
 
         const objectId = toObjectId(userId);
         const result = await collection.findOne({ userId: objectId })
 
         return result
+    }
+
+    async deleteGame(gameId: MongoId): Promise<boolean> {
+        const collection = this.getCollection();
+        const objectId = toObjectId(gameId);
+
+        const result = await collection.deleteOne(
+            {_id: objectId}
+        )
+
+        return result.deletedCount === 1
     }
 }
 

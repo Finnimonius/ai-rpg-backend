@@ -4,7 +4,8 @@ import { gameController } from "../controllers/gameController";
 
 const router = Router();
 
-router.get('/', authMiddleware)
-router.post('/', authMiddleware, gameController.createGame)
+router.get('/', authMiddleware, gameController.getGame);
+router.post('/', authMiddleware, gameController.createGame);
+router.delete('/', authMiddleware, gameController.deleteGame)
 
 export default router

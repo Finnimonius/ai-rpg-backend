@@ -43,5 +43,12 @@ export const gameService = {
 
     async getGame(userId: string): Promise<Game | null> {
         return gameRepository.findGameById(userId)
+    },
+
+    async deleteGame(userId: string): Promise<boolean> {
+        const game = await gameRepository.findGameById(userId);
+        if (!game || !game._id) return false;
+
+        return gameRepository.deleteGame(game._id)
     }
 }
