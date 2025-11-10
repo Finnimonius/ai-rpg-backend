@@ -1,7 +1,7 @@
 export interface InventorySlot {
     itemId: string | null; 
     quantity: number;                 
-}
+};
 
 export interface Equipment {
     weapon_main: string | null;
@@ -14,4 +14,4 @@ export interface Equipment {
     ring_1: string | null;
     ring_2: string | null;
     amulet: string | null;
-}
+};

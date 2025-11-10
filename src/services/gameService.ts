@@ -6,6 +6,8 @@ import { aiService } from "./aiService";
 import { GameHistory } from "../types/game.types";
 import { gameRepository } from "../repositories/gameRepository";
 import { NotFoundError } from "../errors/AppError";
+import { MoveToLocationDto } from "../dtos/game/MoveToLocationDto";
+import { getRandomEvent } from "../utils/generators/event-generator";
 
 export const gameService = {
     async createGame(userId: string, createData: CreateGameDto) {
@@ -50,5 +52,16 @@ export const gameService = {
         if (!game || !game._id) return false;
 
         return gameRepository.deleteGame(game._id)
-    }
+    },
+
+    // async moveToLocation(userId: string, moveData: MoveToLocationDto): Promise<Game> {
+    //     const game = await gameRepository.findGameById(userId);
+    //     if(!game) throw new NotFoundError('Игра');
+
+    //     if(game.currentSteps < 2) {
+    //         const randomEvent = getRandomEvent();
+
+    //     }
+
+    // }
 }

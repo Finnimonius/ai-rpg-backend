@@ -1,6 +1,6 @@
 import { BaseStats } from './character.types';
 
-export type ItemType = 'weapon' | 'armor' | 'accessory' | 'consumable' | 'shopItem';
+export type ItemType = 'weapon' | 'armor' | 'accessory' | 'consumable' | 'shopItem' | 'quest';
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 export type EquipmentSlot = 'helmet' | 'chest' | 'gloves' | 'legs' | 'boots' | 'ring' | 'amulet';
 
