@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import { userService } from '../services/userService';
-import { CreateUserDto } from '../dtos/CreateUserDto';
+import { CreateUserDto } from '../dtos/user/CreateUserDto';
 import { userRepository } from '../repositories/userRepository';
 import { AuthenticatedRequest } from '../middleware/authMiddleware';
-import { UpdateProfileDto } from '../dtos/UpdateProfileDto';
-import { ChangePasswordDto } from '../dtos/ChangePasswordDto';
+import { UpdateProfileDto } from '../dtos/user/UpdateProfileDto';
+import { ChangePasswordDto } from '../dtos/user/ChangePasswordDto';
 
 export const userController = {
     async register(req: Request, res: Response) {

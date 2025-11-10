@@ -6,6 +6,8 @@ const router = Router();
 
 router.get('/', authMiddleware, gameController.getGame);
 router.post('/', authMiddleware, gameController.createGame);
-router.delete('/', authMiddleware, gameController.deleteGame)
+router.delete('/', authMiddleware, gameController.deleteGame);
+
+router.put('/move-to-location', authMiddleware)
 
 export default router

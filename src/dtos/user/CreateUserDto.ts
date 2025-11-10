@@ -1,4 +1,5 @@
-import { UserRole } from "../types/role";
+import { UserRole } from "../../types/role";
+
 
 export interface CreateUserDto {
     nickName: string,

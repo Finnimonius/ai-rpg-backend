@@ -1,6 +1,6 @@
 import { getDataBase } from "../config/database";
 import { User } from "../models/User";
-import { CreateUserDto } from "../dtos/CreateUserDto";
+import { CreateUserDto } from "../dtos/user/CreateUserDto";
 import { MongoId, toObjectId } from '../types/mongodb';
 
 

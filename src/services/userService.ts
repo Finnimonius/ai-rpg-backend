@@ -1,10 +1,10 @@
-import { CreateUserDto } from "../dtos/CreateUserDto";
+import { CreateUserDto } from "../dtos/user/CreateUserDto";
 import { User } from "../models/User";
 import { userRepository } from "../repositories/userRepository";
 import bcrypt from 'bcrypt';
 import { jwtService } from "./jwtService";
-import { UpdateProfileDto } from "../dtos/UpdateProfileDto";
-import { ChangePasswordDto } from "../dtos/ChangePasswordDto";
+import { UpdateProfileDto } from "../dtos/user/UpdateProfileDto";
+import { ChangePasswordDto } from "../dtos/user/ChangePasswordDto";
 import { UserRole } from "../types/role";
 import { NotFoundError, ValidationError, ConflictError, UnauthorizedError } from '../errors/AppError';
 
