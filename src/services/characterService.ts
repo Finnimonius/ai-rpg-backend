@@ -16,12 +16,13 @@ import { SwapEquipmentDto } from "../dtos/character/SwapEquipmentDto";
 import { inventoryService } from "./invetoryService";
 import { GAME_CONFIG } from "../config/game-config";
 import { AddItemToInventory } from "../dtos/character/AddItemToInventoryDto";
+import { NotFoundError, ValidationError, InventoryFullError, EquipmentError } from '../errors/AppError';
 
 
 export const characterService = {
     async createCharacter(userId: string, createData: CreateCharacterDto) {
         const characterClass = CLASSES.find(c => c.id === createData.classId);
-        if (!characterClass) throw new Error("Класс не найден");
+        if (!characterClass) throw new NotFoundError("Класс");
 
         const startingEquipment = getStartingEquipment(createData.classId);
         const startingInventory = inventoryService.createStarterInventory(createData.classId);
@@ -77,17 +78,17 @@ export const characterService = {
 
     async equipItem(userId: string, equipData: EquipItemDto): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
-        if (!character) throw new Error("Персонаж не найден");
-        if (!character._id) throw new Error("ID персонажа не найден");
+        if (!character) throw new NotFoundError("Персонаж");
+        if (!character._id) throw new Error("Отсутствует ID персонажа в базе данных");
 
         const inventorySlot = character.inventory[equipData.inventoryIndex];
         if (!inventorySlot || !inventorySlot.itemId) {
-            throw new Error("Предмет не найден в инвентаре");
+            throw new ValidationError("Предмет не найден в инвентаре");
         }
 
         const item = itemService.getItemById(inventorySlot.itemId);
         const canEquip = canEquipItem(item, equipData.equipmentSlot, character.level);
-        if (!canEquip.canEquip) throw new Error(`Нельзя экипировать: ${canEquip.reason}`);
+        if (!canEquip.canEquip) throw new EquipmentError(`Нельзя экипировать: ${canEquip.reason}`);
 
         const currentEquppedItem = character.equipment[equipData.equipmentSlot];
 
@@ -99,7 +100,7 @@ export const characterService = {
 
         if (currentEquppedItem) {
             const emptySlotIndex = character.inventory.findIndex(slot => !slot.itemId);
-            if (emptySlotIndex === -1) throw new Error("Нет свободного места в инвентаре");
+            if (emptySlotIndex === -1) throw new InventoryFullError();
             updatedInventory[emptySlotIndex] = { itemId: currentEquppedItem, quantity: 1 };
         }
 
@@ -121,25 +122,25 @@ export const characterService = {
             derivedStats: derivedStats
         });
 
-        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        if (!updatedCharacter) throw new Error("Ошибка базы данных при обновлении персонажа");
         return updatedCharacter;
     },
 
     async unequipItem(userId: string, unequipData: UnequipItemDto): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
-        if (!character) throw new Error("Персонаж не найден");
-        if (!character._id) throw new Error("ID персонажа не найден");
+        if (!character) throw new NotFoundError("Персонаж");
+        if (!character._id) throw new Error("Отсутствует ID персонажа в базе данных");
 
         const equippedItemId = character.equipment[unequipData.equipmentSlot];
-        if (!equippedItemId) throw new Error("В слоте нет предмета");
+        if (!equippedItemId) throw new EquipmentError("В слоте нет предмета");
 
         if (unequipData.inventoryIndex < 0 || unequipData.inventoryIndex >= character.inventory.length) {
-            throw new Error("Неверный индекс инвентаря");
+            throw new EquipmentError("Неверный индекс инвентаря");
         }
 
         const targetSlot = character.inventory[unequipData.inventoryIndex];
         if (targetSlot.itemId) {
-            throw new Error("Целевой слот инвентаря занят");
+            throw new EquipmentError("Целевой слот инвентаря занят");
         }
 
         const updatedEquipment = { ...character.equipment };
@@ -170,22 +171,22 @@ export const characterService = {
             derivedStats: derivedStats
         });
 
-        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        if (!updatedCharacter) throw new Error("Ошибка базы данных при обновлении персонажа");
         return updatedCharacter;
     },
 
     async moveInventoryItem(userId: string, moveData: MoveItemDto): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
-        if (!character) throw new Error("Персонаж не найден");
-        if (!character._id) throw new Error("ID персонажа не найден");
+        if (!character) throw new NotFoundError("Персонаж");
+        if (!character._id) throw new Error("Отсутствует ID персонажа в базе данных");
 
         if (moveData.fromIndex < 0 || moveData.fromIndex >= character.inventory.length ||
             moveData.toIndex < 0 || moveData.toIndex >= character.inventory.length) {
-            throw new Error("Неверный индекс инвентаря");
+            throw new EquipmentError("Неверный индекс инвентаря");
         }
 
         const inventorySlot = character.inventory[moveData.fromIndex];
-        if (!inventorySlot || !inventorySlot.itemId) throw new Error("Предмет не найден в инвентаре");
+        if (!inventorySlot || !inventorySlot.itemId) throw new ValidationError("Предмет не найден в указанном слоте");
 
         const updatedInventory = [...character.inventory];
 
@@ -199,30 +200,30 @@ export const characterService = {
             inventory: updatedInventory
         });
 
-        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        if (!updatedCharacter) throw new Error("Ошибка базы данных при обновлении персонажа");
         return updatedCharacter;
     },
 
     async swapEquipmentItem(userId: string, swapData: SwapEquipmentDto): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
-        if (!character) throw new Error("Персонаж не найден");
-        if (!character._id) throw new Error("ID персонажа не найден");
+        if (!character) throw new NotFoundError("Персонаж");
+        if (!character._id) throw new Error("Отсутствует ID персонажа в базе данных");
 
         const fromItemId = character.equipment[swapData.fromSlot];
         const toItemId = character.equipment[swapData.toSlot];
 
-        if (!fromItemId && !toItemId) throw new Error("Оба слота пустые");
+        if (!fromItemId && !toItemId) throw new EquipmentError("Оба слота пустые");
 
         if (fromItemId) {
             const fromItem = itemService.getItemById(fromItemId);
             const canEquipTo = canEquipItem(fromItem, swapData.toSlot, character.level);
-            if (!canEquipTo.canEquip) throw new Error(`Нельзя переместить предмет в слот: ${canEquipTo.reason}`);
+            if (!canEquipTo.canEquip) throw new EquipmentError(`Нельзя переместить предмет в слот: ${canEquipTo.reason}`);
         }
 
         if (toItemId) {
             const toItem = itemService.getItemById(toItemId);
             const canEquipFrom = canEquipItem(toItem, swapData.fromSlot, character.level);
-            if (!canEquipFrom.canEquip) throw new Error(`Нельзя переместить предмет в слот: ${canEquipFrom.reason}`);
+            if (!canEquipFrom.canEquip) throw new EquipmentError(`Нельзя переместить предмет в слот: ${canEquipFrom.reason}`);
         }
 
         const updatedEquipment = { ...character.equipment };
@@ -247,19 +248,19 @@ export const characterService = {
             derivedStats: derivedStats
         });
 
-        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        if (!updatedCharacter) throw new Error("Ошибка базы данных при обновлении персонажа");
         return updatedCharacter;
     },
 
     async addItemToInventory(userId: string, itemData: AddItemToInventory): Promise<Character> {
         const character = await characterRepository.findByUserId(userId);
-        if (!character) throw new Error("Персонаж не найден");
-        if (!character._id) throw new Error("ID персонажа не найден");
+        if (!character) throw new NotFoundError("Персонаж");
+        if (!character._id) throw new Error("Отсутствует ID персонажа в базе данных");
 
         const emptySlotIndex = character.inventory.findIndex(item => !item.itemId);
 
         if(emptySlotIndex === -1) {
-            throw new Error("Нет свободного места в инвентаре");
+            throw new InventoryFullError();
         }
 
         const updatedInventory = [...character.inventory];
@@ -272,7 +273,7 @@ export const characterService = {
             inventory: updatedInventory
         })
 
-        if (!updatedCharacter) throw new Error("Не удалось обновить персонажа");
+        if (!updatedCharacter) throw new Error("Ошибка базы данных при обновлении персонажа");
         return updatedCharacter
     }
 }

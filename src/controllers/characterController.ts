@@ -10,263 +10,138 @@ import { AddItemToInventory } from '../dtos/character/AddItemToInventoryDto';
 
 export const characterController = {
     async create(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
+        const userId = req.user?.userId;
 
-            if (!userId) {
-                return res.status(401).json({
-                    error: 'Не авторизован'
-                })
-            }
+        if (!userId) { return res.status(401).json({ error: 'Не авторизован' }) }
 
-            const createData: CreateCharacterDto = req.body;
-            const character = await characterService.createCharacter(userId, createData);
+        const createData: CreateCharacterDto = req.body;
+        const character = await characterService.createCharacter(userId, createData);
 
-            res.status(201).json({
-                message: 'Персонаж создан',
-                character: character
-            })
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Внутренняя ошибка сервера'
-            });
-        }
+        res.status(201).json({
+            message: 'Персонаж создан',
+            character: character
+        })
     },
 
     async get(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const character = await characterService.getCharacter(userId);
+        const character = await characterService.getCharacter(userId);
 
-            if (!character) {
-                return res.status(404).json({ error: 'Персонаж не найден' });
-            }
-
-            res.status(200).json({ character });
-        } catch (error) {
-            return res.status(500).json({
-                error: 'Внутренняя ошибка сервера'
-            });
+        if (!character) {
+            return res.status(404).json({ error: 'Персонаж не найден' });
         }
+
+        res.status(200).json({ character });
     },
 
     async delete(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const deleted = await characterService.deleteCharacter(userId);
+        const deleted = await characterService.deleteCharacter(userId);
 
-            if (!deleted) {
-                return res.status(404).json({ error: 'Персонаж не найден' });
-            }
-
-            res.status(200).json({
-                message: 'Персонаж успешно удален',
-                deleted: true
-            });
-        } catch (error) {
-            console.error('Ошибка удаления персонажа:', error);
-            return res.status(500).json({
-                error: 'Внутренняя ошибка сервера'
-            });
+        if (!deleted) {
+            return res.status(404).json({ error: 'Персонаж не найден' });
         }
+
+        res.status(200).json({
+            message: 'Персонаж успешно удален',
+            deleted: true
+        });
+
     },
 
     async equip(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const equipData: EquipItemDto = req.body;
+        const equipData: EquipItemDto = req.body;
 
-            if (equipData.inventoryIndex === undefined || !equipData.equipmentSlot) {
-                return res.status(400).json({ error: 'Неверные данные запроса' });
-            }
-
-            const character = await characterService.equipItem(userId, equipData);
-
-            res.status(200).json({
-                message: 'Предмет экипирован',
-                character: character
-            });
-        } catch (error) {
-            console.error('Ошибка экипировки:', error);
-
-            if (error instanceof Error) {
-                if (error.message.includes('Не авторизован')) {
-                    return res.status(401).json({ error: error.message });
-                }
-                if (error.message.includes('не найден')) {
-                    return res.status(404).json({ error: error.message });
-                }
-                if (error.message.includes('Нельзя экипировать') ||
-                    error.message.includes('Нет свободного места')) {
-                    return res.status(400).json({ error: error.message });
-                }
-            }
-
-            return res.status(500).json(
-                { error: 'Внутренняя ошибка сервера' }
-            );
+        if (equipData.inventoryIndex === undefined || !equipData.equipmentSlot) {
+            return res.status(400).json({ error: 'Неверные данные запроса' });
         }
+
+        const character = await characterService.equipItem(userId, equipData);
+
+        res.status(200).json({
+            message: 'Предмет экипирован',
+            character: character
+        });
+
     },
     async unequip(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const unequipData: UnequipItemDto = req.body;
+        const unequipData: UnequipItemDto = req.body;
 
-            if (!unequipData.equipmentSlot || unequipData.inventoryIndex === undefined) {
-                return res.status(400).json({ error: 'Неверные данные запроса' });
-            }
-
-            const character = await characterService.unequipItem(userId, unequipData);
-
-            res.status(200).json({
-                message: 'Предмет снят',
-                character: character
-            });
-
-        } catch (error) {
-            console.error('Ошибка экипировки:', error);
-
-            if (error instanceof Error) {
-                if (error.message.includes('Не авторизован')) {
-                    return res.status(401).json({ error: error.message });
-                }
-                if (error.message.includes('не найден')) {
-                    return res.status(404).json({ error: error.message });
-                }
-                if (error.message.includes('Нельзя экипировать') ||
-                    error.message.includes('Нет свободного места')) {
-                    return res.status(400).json({ error: error.message });
-                }
-            }
-
-            return res.status(500).json(
-                { error: 'Внутренняя ошибка сервера' }
-            );
+        if (!unequipData.equipmentSlot || unequipData.inventoryIndex === undefined) {
+            return res.status(400).json({ error: 'Неверные данные запроса' });
         }
+
+        const character = await characterService.unequipItem(userId, unequipData);
+
+        res.status(200).json({
+            message: 'Предмет снят',
+            character: character
+        });
     },
 
     async moveInventory(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const moveData: MoveItemDto = req.body;
+        const moveData: MoveItemDto = req.body;
 
-            // Валидация
-            if (moveData.fromIndex === undefined || moveData.toIndex === undefined) {
-                return res.status(400).json({ error: 'Неверные данные запроса' });
-            }
-
-            const character = await characterService.moveInventoryItem(userId, moveData);
-
-            res.status(200).json({
-                message: 'Предмет перемещен',
-                character: character
-            });
-
-        } catch (error) {
-            console.error('Ошибка перемещения:', error);
-
-            if (error instanceof Error) {
-                if (error.message.includes('Не авторизован')) {
-                    return res.status(401).json({ error: error.message });
-                }
-                if (error.message.includes('не найден')) {
-                    return res.status(404).json({ error: error.message });
-                }
-                if (error.message.includes('Неверный индекс') ||
-                    error.message.includes('Нельзя переместить')) {
-                    return res.status(400).json({ error: error.message });
-                }
-            }
-            return res.status(500).json(
-                { error: 'Внутренняя ошибка сервера' }
-            );
+        // Валидация
+        if (moveData.fromIndex === undefined || moveData.toIndex === undefined) {
+            return res.status(400).json({ error: 'Неверные данные запроса' });
         }
+
+        const character = await characterService.moveInventoryItem(userId, moveData);
+
+        res.status(200).json({
+            message: 'Предмет перемещен',
+            character: character
+        });
+
     },
 
     async swapEquipment(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const swapData: SwapEquipmentDto = req.body;
+        const swapData: SwapEquipmentDto = req.body;
 
-            if (!swapData.fromSlot || !swapData.toSlot) {
-                return res.status(400).json({ error: 'Неверные данные запроса' });
-            }
-
-            const character = await characterService.swapEquipmentItem(userId, swapData);
-
-            res.status(200).json({
-                message: 'Экипировка изменена',
-                character: character
-            });
-
-        } catch (error) {
-            console.error('Ошибка перемещения:', error);
-
-            if (error instanceof Error) {
-                if (error.message.includes('Не авторизован')) {
-                    return res.status(401).json({ error: error.message });
-                }
-                if (error.message.includes('не найден')) {
-                    return res.status(404).json({ error: error.message });
-                }
-                if (error.message.includes('Неверный индекс') ||
-                    error.message.includes('Нельзя переместить')) {
-                    return res.status(400).json({ error: error.message });
-                }
-            }
-            return res.status(500).json(
-                { error: 'Внутренняя ошибка сервера' }
-            );
+        if (!swapData.fromSlot || !swapData.toSlot) {
+            return res.status(400).json({ error: 'Неверные данные запроса' });
         }
+
+        const character = await characterService.swapEquipmentItem(userId, swapData);
+
+        res.status(200).json({
+            message: 'Экипировка изменена',
+            character: character
+        });
     },
 
     async addItemToInventory(req: AuthenticatedRequest, res: Response) {
-        try {
-            const userId = req.user?.userId;
-            if (!userId) return res.status(401).json({ error: 'Не авторизован' });
+        const userId = req.user?.userId;
+        if (!userId) return res.status(401).json({ error: 'Не авторизован' });
 
-            const itemData: AddItemToInventory = req.body;
+        const itemData: AddItemToInventory = req.body;
 
-            if (!itemData.itemId || !itemData.quantity) {
-                return res.status(400).json({ error: 'Неверные данные запроса' });
-            }
-
-            const character = await characterService.addItemToInventory(userId, itemData);
-
-            res.status(200).json({
-                message: 'Предмет добавлен в инвентарь',
-                character: character
-            })
-        } catch (error) {
-            console.error('Ошибка получения предмета:', error);
-
-            if (error instanceof Error) {
-                if (error.message.includes('Не авторизован')) {
-                    return res.status(401).json({ error: error.message });
-                }
-                if (error.message.includes('не найден')) {
-                    return res.status(404).json({ error: error.message });
-                }
-                if (error.message.includes('Нет свободного')) {
-                    return res.status(400).json({ error: error.message });
-                }
-            }
-
-            return res.status(500).json(
-                { error: 'Внутренняя ошибка сервера' }
-            );
+        if (!itemData.itemId || !itemData.quantity) {
+            return res.status(400).json({ error: 'Неверные данные запроса' });
         }
+
+        const character = await characterService.addItemToInventory(userId, itemData);
+
+        res.status(200).json({
+            message: 'Предмет добавлен в инвентарь',
+            character: character
+        })
     }
 }

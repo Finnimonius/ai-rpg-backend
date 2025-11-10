@@ -7,6 +7,7 @@ import characterRoutes from './routes/characterRoutes';
 import cookieParser from 'cookie-parser';
 import { config, validateConfig } from './config/env';
 import { connectToDatabase } from './config/database';
+import { errorHandler } from './middleware/errorHandler';
 
 validateConfig()
 
@@ -22,7 +23,9 @@ app.use(cookieParser());
 app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/character', characterRoutes);
-app.use('/api/game', gameRoutes)
+app.use('/api/game', gameRoutes);
+
+app.use(errorHandler);
 
 async function startServer() {
     try {
