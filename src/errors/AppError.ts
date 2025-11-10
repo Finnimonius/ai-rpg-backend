@@ -33,3 +33,15 @@ export class EquipmentError extends AppError {
         super(message, 400, message);
     }
 }
+
+export class ConflictError extends AppError {
+    constructor(message: string) {
+        super(message, 409, message);
+    }
+}
+
+export class UnauthorizedError extends AppError {
+    constructor(message: string = 'Неверные учетные данные') {
+        super(message, 401, message);
+    }
+}

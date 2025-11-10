@@ -6,13 +6,14 @@ import { jwtService } from "./jwtService";
 import { UpdateProfileDto } from "../dtos/UpdateProfileDto";
 import { ChangePasswordDto } from "../dtos/ChangePasswordDto";
 import { UserRole } from "../types/role";
+import { NotFoundError, ValidationError, ConflictError, UnauthorizedError } from '../errors/AppError';
 
 export const userService = {
     async register(userData: CreateUserDto): Promise<Omit<User, 'password'>> {
         const existingUser = await userRepository.findByEmail(userData.email);
 
         if (existingUser) {
-            throw new Error("Пользователь с таким email уже существует");
+            throw new ConflictError("Пользователь с таким email уже существует");
         }
 
         const { confirmPassword, ...userDataForDb } = userData;
@@ -39,13 +40,13 @@ export const userService = {
         const user = await userRepository.findByEmail(email);
 
         if (!user) {
-            throw new Error("Пользователь с таким email не найден");
+            throw new UnauthorizedError("Пользователь с таким email не найден");
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password)
 
         if (!isPasswordValid) {
-            throw new Error("Неверный пароль");
+            throw new UnauthorizedError("Неверный пароль");
         }
 
         const { password: _, ...userWithoutPassword } = user;
@@ -66,14 +67,14 @@ export const userService = {
             const existingUser = await userRepository.findByEmail(updatedData.email);
 
             if (existingUser && existingUser._id?.toString() !== userId) {
-                throw new Error("Пользователь с таким email уже существует");
+                throw new ConflictError("Пользователь с таким email уже существует");
             }
         }
 
         const user = await userRepository.updateUser(userId, updatedData);
 
         if (!user) {
-            throw new Error("Пользователь с таким email не найден");
+            throw new NotFoundError("Пользователь");
         }
 
         const { password: _, ...userWithoutPassword } = user;
@@ -85,17 +86,17 @@ export const userService = {
         const user = await userRepository.findById(userId);
 
         if (!user) {
-            throw new Error("Пользователь с таким id не найден");
+            throw new NotFoundError("Пользователь");
         }
 
         const isOldPassword = await bcrypt.compare(passwordData.oldPassword, user.password);
         if (!isOldPassword) {
-            throw new Error('Неверный текущий пароль')
+            throw new ValidationError('Неверный текущий пароль')
         }
 
         const isSamePassword = await bcrypt.compare(passwordData.newPassword, user.password);
         if (isSamePassword) {
-            throw new Error("Новый пароль должен отличаться от старого");
+            throw new ValidationError("Новый пароль должен отличаться от старого");
         }
 
         const saltRounds = 10;

@@ -13,6 +13,6 @@ router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 
 router.put('/profile',authMiddleware, userController.updateProfile);
-router.put('/password', authMiddleware, authValidateChangePassword, userController.changePassword)
+router.put('/password', authMiddleware, authValidateChangePassword, userController.changePassword);
 
 export default router
