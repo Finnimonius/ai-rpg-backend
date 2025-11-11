@@ -8,6 +8,6 @@ router.get('/', authMiddleware, gameController.getGame);
 router.post('/', authMiddleware, gameController.createGame);
 router.delete('/', authMiddleware, gameController.deleteGame);
 
-router.put('/move-to-location', authMiddleware)
+router.post('/move', authMiddleware, gameController.moveToLocation);
 
 export default router
