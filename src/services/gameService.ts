@@ -7,7 +7,8 @@ import { GameHistory } from "../types/game.types";
 import { gameRepository } from "../repositories/gameRepository";
 import { NotFoundError } from "../errors/AppError";
 import { MoveToLocationDto } from "../dtos/game/MoveToLocationDto";
-import { getRandomEvent } from "../utils/generators/event-generator";
+import { generateEvent, getRandomEvent } from "../utils/generators/event-generator";
+import { storyService } from "./storyService";
 
 export const gameService = {
     async createGame(userId: string, createData: CreateGameDto) {
@@ -22,7 +23,7 @@ export const gameService = {
         const aiPrompt = `Начини рассказ истории в стиле RPG. Мы сейчас находимся в локации ${startingLocation.name}. 
         Вот небольшое описание к ней: ${dungeon[0].description}. И в конце предложи пойти на выбор ${directionsText}`;
 
-        const aiText = await aiService.generateText(aiPrompt);
+        const aiText = await storyService.getLocationStory(userId, createData.currentDungeon, startingLocation.id, aiPrompt)
 
         const gameHistory: GameHistory = {
             type: 'location',
@@ -60,7 +61,8 @@ export const gameService = {
 
     //     if(game.currentSteps < 2) {
     //         const randomEvent = getRandomEvent();
-
+    //         const currentEvent = generateEvent(randomEvent);
+            
     //     }
 
     // }
