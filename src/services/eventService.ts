@@ -1,8 +1,9 @@
 import { NotFoundError, ValidationError } from "../errors/AppError";
+import { Game } from "../models/Game";
 import { gameRepository } from "../repositories/gameRepository"
 
 export const eventService = {
-    async openTreasure(userId: string) {
+    async openTreasure(userId: string): Promise<Game | null> {
         const game = await gameRepository.findGameById(userId);
         if (!game) throw new NotFoundError('Игра');
         if (!game._id) throw new Error("Отсутствует ID игры в базе данных");
@@ -18,7 +19,7 @@ export const eventService = {
         })
     },
 
-    async takeReward(userId: string) {
+    async takeReward(userId: string): Promise<Game | null> {
         const game = await gameRepository.findGameById(userId);
         if (!game) throw new NotFoundError('Игра');
         if (!game._id) throw new Error("Отсутствует ID игры в базе данных");
