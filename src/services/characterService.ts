@@ -259,9 +259,7 @@ export const characterService = {
 
         const emptySlotIndex = character.inventory.findIndex(item => !item.itemId);
 
-        if(emptySlotIndex === -1) {
-            throw new InventoryFullError();
-        }
+        if(emptySlotIndex === -1) throw new InventoryFullError();
 
         const updatedInventory = [...character.inventory];
         updatedInventory[emptySlotIndex] = {

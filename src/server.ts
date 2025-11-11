@@ -3,6 +3,7 @@ import cors from 'cors';
 import aiRoutes from './routes/aiRoutes';
 import authRoutes from './routes/authRoutes';
 import gameRoutes from './routes/gameRoutes';
+import eventRoutes from './routes/eventRoutes';
 import characterRoutes from './routes/characterRoutes';
 import cookieParser from 'cookie-parser';
 import { config, validateConfig } from './config/env';
@@ -24,6 +25,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/character', characterRoutes);
 app.use('/api/game', gameRoutes);
+app.use('/api/event', eventRoutes)
 
 app.use(errorHandler);
 
