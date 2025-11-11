@@ -3,19 +3,24 @@ import { storyCacheRepository } from "../repositories/storyCacheRepository";
 import { toObjectId } from "../types/mongodb";
 import { aiService } from "./aiService";
 
-export const storyService = {
-    async getLocationStory(userId: string, dungeonId: keyof typeof ALL_LOCATIONS, locationId: string, aiPrompt: string) {
-        const locationKey = `${dungeonId}:${locationId}`;
+export const storyCacheService = {
+    async getLocationStory(userId: string, dungeonId: keyof typeof ALL_LOCATIONS, locationId: string, aiPrompt: string, eventId?: string) {
+        let locationKey;
+        if (eventId) {
+            locationKey = `${dungeonId}:${locationId}:${eventId}`;
+        } else {
+            locationKey = `${dungeonId}:${locationId}`;
+        }
         const unusedStory = await storyCacheRepository.findUnusedStory(userId, locationKey);
 
-        if(unusedStory) {
+        if (unusedStory) {
             await storyCacheRepository.markStoryAsUsed(userId, locationKey, unusedStory.text)
             return unusedStory.text
         }
 
         const existingCache = await storyCacheRepository.findByLocationKey(locationKey);
 
-        if(existingCache) {
+        if (existingCache) {
             const newStory = await aiService.generateText(aiPrompt);
             await storyCacheRepository.addStory(userId, locationKey, newStory);
             return newStory

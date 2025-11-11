@@ -3,7 +3,7 @@ import { EVENTS } from "../../data/events/allEvents";
 import { treasureEvents } from "../../data/events/treasureEvent";
 import { ALL_ITEMS_BY_TYPE_AND_RARITY } from "../../data/items/allItems";
 import { treasureRewards } from "../../data/rewards/treasureReward";
-import { EventType, Treasure } from "../../types/game.types";
+import { CurrentEvent, EventType, Treasure } from "../../types/game.types";
 import { AnyItem, Rarity } from "../../types/items.types";
 
 export function getRandomEvent(): EventType {
@@ -20,7 +20,7 @@ export function generateEvent(type: EventType) {
     }
 }
 
-function generateTreasureEvent(type: EventType) {
+function generateTreasureEvent(type: EventType): CurrentEvent {
     const randomTreasureEvent = treasureEvents[Math.floor(Math.random() * treasureEvents.length)];
     const randomRewardType = randomTreasureEvent.container[Math.floor(Math.random() * randomTreasureEvent.container.length)];
 

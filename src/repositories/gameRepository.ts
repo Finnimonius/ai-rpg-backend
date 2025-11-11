@@ -31,6 +31,22 @@ export class GameRepository {
         return result
     }
 
+    async updateGame(gameId: MongoId, updatedData: Partial<Game>): Promise<Game | null> {
+        const collection = this.getCollection();
+        const objectId = toObjectId(gameId);
+
+        const result = await collection.findOneAndUpdate(
+            {_id: objectId},
+            {
+                $set: {
+                    ...updatedData
+                }
+            },
+            { returnDocument: 'after' }
+        )
+        return result
+    }
+
     async deleteGame(gameId: MongoId): Promise<boolean> {
         const collection = this.getCollection();
         const objectId = toObjectId(gameId);

@@ -20,7 +20,7 @@ import { NotFoundError, ValidationError, InventoryFullError, EquipmentError } fr
 
 
 export const characterService = {
-    async createCharacter(userId: string, createData: CreateCharacterDto) {
+    async createCharacter(userId: string, createData: CreateCharacterDto): Promise<Character> {
         const characterClass = CLASSES.find(c => c.id === createData.classId);
         if (!characterClass) throw new NotFoundError("Класс");
 

@@ -1,14 +1,26 @@
-import { ItemType } from "./items.types";
+import { AnyItem, ItemType } from "./items.types";
 
-type Directions = 'south' | 'southeast' | 'southwest' | 'west' | 'north' | 'northwest' | 'northeast';
+export type Directions = 'south' | 'southeast' | 'southwest' | 'west' | 'north' | 'northwest' | 'northeast';
 
 export type GameHistory = {
     type: 'location' | 'travel_event',
     aiText: string,
+    currentEvent: CurrentEvent | null,
     directions: Directions[]
 }
 
 export type EventType = 'combat' | 'treasure'
+
+export type CurrentEvent = {
+    eventType: EventType,
+    id: string,
+    title: string,
+    description: string,
+    container: TreasureType[],
+    reward: AnyItem,
+    isOpened: boolean,
+    isTaken: boolean,
+}
 
 export type TreasureType = 'chest' | 'large_chest' | 'gemstones' | 'bag';
 
