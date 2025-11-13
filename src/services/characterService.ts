@@ -17,6 +17,7 @@ import { inventoryService } from "./invetoryService";
 import { GAME_CONFIG } from "../config/game-config";
 import { AddItemToInventory } from "../dtos/character/AddItemToInventoryDto";
 import { NotFoundError, ValidationError, InventoryFullError, EquipmentError } from '../errors/AppError';
+import { BACKGROUNDS } from "../data/character/backgrounds";
 
 
 export const characterService = {
@@ -28,6 +29,9 @@ export const characterService = {
         const startingInventory = inventoryService.createStarterInventory(createData.classId);
 
         const equipmentStats = calculateEquipmentStats(startingEquipment, STARTER_ITEMS_ARRAY);
+        
+        const isValidBackground = BACKGROUNDS.some(bg => bg.id === createData.backgroundId);
+        if (!isValidBackground) throw new ValidationError('Неверный бэкграунд');
 
         const baseStats = { ...characterClass.baseStats };
         const totalStats = {
@@ -46,6 +50,7 @@ export const characterService = {
             classId: characterClass.id,
             backgroundId: createData.backgroundId,
             level: GAME_CONFIG.STARTING_LEVEL,
+            experience: 0,
             baseStats: baseStats,
             stats: totalStats,
             derivedStats: derivedStats,

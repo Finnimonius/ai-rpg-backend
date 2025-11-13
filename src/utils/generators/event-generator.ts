@@ -47,6 +47,7 @@ function generateTreasureEvent(type: EventType): CurrentEvent {
     return {
         eventType: type,
         ...randomTreasureEvent,
+        rewardBox: randomRewardType,
         reward: reward,
         isOpened: false,
         isTaken: false

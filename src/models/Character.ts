@@ -9,6 +9,7 @@ export interface Character {
     classId: string,
     backgroundId: string,
     level: number,
+    experience: number,
     baseStats: BaseStats,
     stats: BaseStats,
     derivedStats: DerivedStats,

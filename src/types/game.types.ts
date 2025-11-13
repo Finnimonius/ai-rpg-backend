@@ -17,6 +17,7 @@ export type CurrentEvent = {
     title: string,
     description: string,
     container: TreasureType[],
+    rewardBox: TreasureType,
     reward: AnyItem,
     isOpened: boolean,
     isTaken: boolean,

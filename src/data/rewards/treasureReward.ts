@@ -21,7 +21,7 @@ export const treasureRewards: Record<TreasureType, TreasureContainer> = {
   },
   bag: {
     rewards: [
-      { type: 'shopItem', category: 'gold', chance: 100 },
+      { type: 'shopItem', category: 'gold', chance: 50 },
       { type: 'consumable', chance: 50 },
     ],
   },
