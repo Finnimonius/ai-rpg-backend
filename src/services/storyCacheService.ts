@@ -7,7 +7,7 @@ export const storyCacheService = {
     async getLocationStory(userId: string, dungeonId: keyof typeof ALL_LOCATIONS, locationId: string, aiPrompt: string, eventId?: string) {
         let locationKey;
         if (eventId) {
-            locationKey = `${dungeonId}:${locationId}:${eventId}`;
+            locationKey = `${dungeonId}:${eventId}`;
         } else {
             locationKey = `${dungeonId}:${locationId}`;
         }

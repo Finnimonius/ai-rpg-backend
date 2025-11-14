@@ -4,7 +4,7 @@ import { Character } from "../models/Character";
 import { CLASSES } from "../data/character/classes";
 import { getStartingEquipment } from "../utils/generators/items-bulder";
 import { calculateEquipmentStats, canEquipItem } from "../utils/helpers/equipmentUtils";
-import { STARTER_ITEMS_ARRAY } from "../data/items/allItems";
+import { ALL_ITEMS, STARTER_ITEMS_ARRAY } from "../data/items/allItems";
 import { calculateDerivedStats } from "../utils/helpers/statsCalculator";
 import { characterRepository } from "../repositories/characterRepository";
 import { EquipItemDto } from "../dtos/character/EquipItemDto";
@@ -29,7 +29,7 @@ export const characterService = {
         const startingInventory = inventoryService.createStarterInventory(createData.classId);
 
         const equipmentStats = calculateEquipmentStats(startingEquipment, STARTER_ITEMS_ARRAY);
-        
+
         const isValidBackground = BACKGROUNDS.some(bg => bg.id === createData.backgroundId);
         if (!isValidBackground) throw new ValidationError('Неверный бэкграунд');
 
@@ -101,15 +101,17 @@ export const characterService = {
         const updatedInventory = [...character.inventory];
 
         updatedEquipment[equipData.equipmentSlot] = inventorySlot.itemId;
-        updatedInventory[equipData.inventoryIndex] = { itemId: null, quantity: 0 };
 
         if (currentEquppedItem) {
-            const emptySlotIndex = character.inventory.findIndex(slot => !slot.itemId);
-            if (emptySlotIndex === -1) throw new InventoryFullError();
-            updatedInventory[emptySlotIndex] = { itemId: currentEquppedItem, quantity: 1 };
+            updatedInventory[equipData.inventoryIndex] = {
+                itemId: currentEquppedItem,
+                quantity: 1
+            };
+        } else {
+            updatedInventory[equipData.inventoryIndex] = { itemId: null, quantity: 0 };
         }
 
-        const equipmentStats = calculateEquipmentStats(updatedEquipment, STARTER_ITEMS_ARRAY);
+        const equipmentStats = calculateEquipmentStats(updatedEquipment, ALL_ITEMS);
         const totalStats = {
             strength: character.baseStats.strength + equipmentStats.stats.strength,
             dexterity: character.baseStats.dexterity + equipmentStats.stats.dexterity,
@@ -158,7 +160,7 @@ export const characterService = {
             quantity: 1
         };
 
-        const equipmentStats = calculateEquipmentStats(updatedEquipment, STARTER_ITEMS_ARRAY);
+        const equipmentStats = calculateEquipmentStats(updatedEquipment, ALL_ITEMS);
         const totalStats = {
             strength: character.baseStats.strength + equipmentStats.stats.strength,
             dexterity: character.baseStats.dexterity + equipmentStats.stats.dexterity,
@@ -264,7 +266,7 @@ export const characterService = {
 
         const emptySlotIndex = character.inventory.findIndex(item => !item.itemId);
 
-        if(emptySlotIndex === -1) throw new InventoryFullError();
+        if (emptySlotIndex === -1) throw new InventoryFullError();
 
         const updatedInventory = [...character.inventory];
         updatedInventory[emptySlotIndex] = {

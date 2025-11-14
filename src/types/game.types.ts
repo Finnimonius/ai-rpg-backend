@@ -6,7 +6,9 @@ export type GameHistory = {
     type: 'location' | 'travel_event',
     aiText: string,
     currentEvent: CurrentEvent | null,
-    directions: Directions[]
+    directions: Directions[],
+    currentDirection?: Directions,
+    isDirectionUsed?: boolean,
 }
 
 export type EventType = 'combat' | 'treasure'

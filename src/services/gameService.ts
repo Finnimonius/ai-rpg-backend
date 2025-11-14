@@ -28,7 +28,8 @@ export const gameService = {
             type: 'location',
             aiText: aiText,
             currentEvent: dungeon[0].event,
-            directions: directions
+            directions: directions,
+            isDirectionUsed: false,
         }
 
         const gameData: Game = {
@@ -63,6 +64,15 @@ export const gameService = {
         const directionName = moveData.directionName;
 
         if (game.currentSteps < 2) {
+            const updatedHistories = [...game.gameHistories];
+            const lastIndex = updatedHistories.length - 1;
+            if (lastIndex >= 0) {
+                updatedHistories[lastIndex] = {
+                    ...updatedHistories[lastIndex],
+                    isDirectionUsed: true
+                };
+            }
+
             const randomEvent = getRandomEvent();
             const currentEvent = generateEvent(randomEvent);
             if (!currentEvent) throw new NotFoundError("Событие");
@@ -82,7 +92,9 @@ export const gameService = {
                 type: 'travel_event',
                 aiText: aiText,
                 currentEvent: currentEvent,
-                directions: [moveData.directionId]
+                directions: [moveData.directionId],
+                currentDirection: moveData.directionId,
+                isDirectionUsed: false
             }
 
             const currentSteps = game.currentSteps + 1;
@@ -91,7 +103,7 @@ export const gameService = {
             if (!targetLocation) throw new NotFoundError("Направление");
 
             const gameHistories = [
-                ...game.gameHistories,
+                ...updatedHistories,
                 gameHistory
             ]
 
@@ -107,6 +119,15 @@ export const gameService = {
 
             return gameRepository.updateGame(game._id, gameData)
         } else {
+            const updatedHistories = [...game.gameHistories];
+            const lastIndex = updatedHistories.length - 1;
+            if (lastIndex >= 0) {
+                updatedHistories[lastIndex] = {
+                    ...updatedHistories[lastIndex],
+                    isDirectionUsed: true
+                };
+            }
+
             const currentSteps = 0;
             const currentLocation = game.targetLocation;
 
@@ -136,11 +157,12 @@ export const gameService = {
                 type: 'location',
                 aiText: aiText,
                 currentEvent: currentEvent,
-                directions: directions
+                directions: directions,
+                isDirectionUsed: false
             }
 
             const gameHistories = [
-                ...game.gameHistories,
+                ...updatedHistories,
                 gameHistory
             ]
 
