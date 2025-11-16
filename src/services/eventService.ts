@@ -31,5 +31,19 @@ export const eventService = {
         return gameRepository.updateGame(game._id, {
             [`gameHistories.${lastHistoryIndex}.currentEvent.isTaken`]: true
         })
-    }
+    },
+
+    async skipReward(userId: string): Promise<Game | null> {
+        const game = await gameRepository.findGameById(userId);
+        if (!game) throw new NotFoundError('Игра');
+        if (!game._id) throw new Error("Отсутствует ID игры в базе данных");
+
+        const lastHistoryIndex = game.gameHistories.length - 1;
+        const isSkipped = game.gameHistories[lastHistoryIndex]?.currentEvent?.isSkipped;
+        if (isSkipped) throw new ValidationError("Вы пропустили награду");
+
+        return gameRepository.updateGame(game._id, {
+            [`gameHistories.${lastHistoryIndex}.currentEvent.isSkipped`]: true
+        })
+    },
 }

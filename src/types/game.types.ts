@@ -23,6 +23,7 @@ export type CurrentEvent = {
     reward: AnyItem,
     isOpened: boolean,
     isTaken: boolean,
+    isSkipped?: boolean,
 }
 
 export type TreasureType = 'chest' | 'large_chest' | 'gemstones' | 'bag';

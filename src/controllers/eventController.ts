@@ -25,5 +25,17 @@ export const eventController = {
             message: 'Награда получена',
             game: game
         })
+    },
+
+    async skipReward(req: AuthenticatedRequest, res: Response) {
+        const userId = req.user?.userId;
+        if (!userId) { return res.status(401).json({ error: 'Не авторизован' }) }
+
+        const game = await eventService.skipReward(userId);
+
+        res.status(200).json({
+            message: 'Награда получена',
+            game: game
+        })
     }
 }

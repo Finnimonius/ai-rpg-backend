@@ -50,7 +50,8 @@ function generateTreasureEvent(type: EventType): CurrentEvent {
         rewardBox: randomRewardType,
         reward: reward,
         isOpened: false,
-        isTaken: false
+        isTaken: false,
+        isSkipped: false,
     };
 }
 
