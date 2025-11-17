@@ -24,18 +24,18 @@ export interface DerivedStats {
 }
 
 export interface ClassConfig {
-    equipment: Equipment;
+    equipment: Equipment
 }
 
 export interface Ability {
-  id: string;
-  name: string;
-  description: string;
+  id: string,
+  name: string,
+  description: string,
   type: 'damage' | 'utility',
   cost: {
-    ap: number;
-    mana?: number;
-    leads?: number;
+    ap: number,
+    mana?: number,
+    leads?: number,
   };
   damage?: {
     base: number,
@@ -49,9 +49,9 @@ export interface Ability {
     chance?: number,
     duration?: number
   }>,
-  cooldown?: number;
+  cooldown?: number,
   requirements?: {
-    level: number;
-    subclass?: string;
+    level: number,
+    subclass?: string,
   };
 }
