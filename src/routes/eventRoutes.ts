@@ -1,11 +1,15 @@
 import { Router } from "express";
 import { authMiddleware } from "../middleware/authMiddleware";
-import { eventController } from "../controllers/eventController";
+import { treasureController } from "../controllers/treasureController";
 
 const router = Router()
 
-router.post('/treasure/open', authMiddleware, eventController.openTreasure);
-router.post('/treasure/take', authMiddleware, eventController.takeReward);
-router.post('/treasure/skip', authMiddleware, eventController.skipReward);
+// Treasure
+router.post('/treasure/open', authMiddleware, treasureController.openTreasure);
+router.post('/treasure/take', authMiddleware, treasureController.takeReward);
+router.post('/treasure/skip', authMiddleware, treasureController.skipReward);
+
+// Combat
+router.post('/combat', authMiddleware)
 
 export default router

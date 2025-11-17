@@ -16,11 +16,11 @@ export function getRandomEvent(): EventType {
 export function generateEvent(type: EventType) {
     switch (type) {
         case 'treasure':
-            return generateTreasureEvent(type)
+            return generateTreasureEvent()
     }
 }
 
-function generateTreasureEvent(type: EventType): CurrentEvent {
+function generateTreasureEvent(): CurrentEvent {
     const randomTreasureEvent = treasureEvents[Math.floor(Math.random() * treasureEvents.length)];
     const randomRewardType = randomTreasureEvent.container[Math.floor(Math.random() * randomTreasureEvent.container.length)];
 
@@ -45,7 +45,7 @@ function generateTreasureEvent(type: EventType): CurrentEvent {
     const reward = items[Math.floor(Math.random() * items.length)];
 
     return {
-        eventType: type,
+        eventType: 'treasure',
         ...randomTreasureEvent,
         rewardBox: randomRewardType,
         reward: reward,

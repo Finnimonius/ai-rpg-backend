@@ -142,7 +142,7 @@ export const gameService = {
             }
 
             const aiPrompt = `Игрок направляется на ${directionName}. 
-            Игрок попадает в локацию ${currentLocation}. Описание события: ${location.description}. 
+            Игрок попадает в локацию ${location.name}. Описание события: ${location.description}. 
             Напиши описание в стиле RPG`;
             const aiText = await storyCacheService.getLocationStory(
                 userId,

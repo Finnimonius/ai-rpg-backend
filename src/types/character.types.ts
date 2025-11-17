@@ -26,3 +26,32 @@ export interface DerivedStats {
 export interface ClassConfig {
     equipment: Equipment;
 }
+
+export interface Ability {
+  id: string;
+  name: string;
+  description: string;
+  type: 'damage' | 'utility',
+  cost: {
+    ap: number;
+    mana?: number;
+    leads?: number;
+  };
+  damage?: {
+    base: number,
+    multiplier: number,
+    isWeapon: boolean
+  },
+  effects?: Array<{
+    type: 'ADD_LEADS' | 'SELF_BUFF' | 'STUN',
+    stat?: keyof DerivedStats,
+    value?: number,
+    chance?: number,
+    duration?: number
+  }>,
+  cooldown?: number;
+  requirements?: {
+    level: number;
+    subclass?: string;
+  };
+}
