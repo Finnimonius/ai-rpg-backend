@@ -12,6 +12,7 @@ export const FOREST_ENEMIES: EnemyTemplate[] = [
             strength: 8,
             dexterity: 14,
             intelligence: 3,
+            wisdom: 5,
             constitution: 6,
             luck: 3
         },
@@ -42,6 +43,7 @@ export const FOREST_ENEMIES: EnemyTemplate[] = [
             strength: 8,
             dexterity: 14,
             intelligence: 3,
+            wisdom: 5,
             constitution: 8,
             luck: 3
         },
@@ -54,7 +56,7 @@ export const FOREST_ENEMIES: EnemyTemplate[] = [
 
         abilities: ['quick_attack', 'dirty_trick'],
 
-        loot: [ 'large_chest' ],
+        loot: ['large_chest'],
 
         experience: 25,
         gold: { min: 5, max: 12 },
