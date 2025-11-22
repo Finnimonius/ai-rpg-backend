@@ -1,6 +1,5 @@
 import { BaseStats } from "./character.types";
 import { CombatRewardType } from "./combat.types";
-import { AnyItem } from "./items.types";
 
 // Шаблон противника
 export interface EnemyTemplate {

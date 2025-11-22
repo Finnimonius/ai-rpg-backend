@@ -11,5 +11,4 @@ export interface CombatAction {
     type: 'ability' | 'attack' | 'item';
     abilityId?: string;
     itemId?: string;
-    target: 'enemy' | 'self';
 }

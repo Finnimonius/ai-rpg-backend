@@ -3,28 +3,28 @@ import { Equipment } from "./inventory.types";
 export type ClassId = 'grey_wanderer';
 
 export interface BaseStats {
-    strength: number,
-    dexterity: number,
-    intelligence: number,
-    wisdom: number,
-    constitution: number,
-    luck: number
+  strength: number,
+  dexterity: number,
+  intelligence: number,
+  wisdom: number,
+  constitution: number,
+  luck: number
 }
 
 export interface DerivedStats {
-    health: number,
-    maxHealth: number,
-    mana: number,
-    maxMana: number,
-    attackMin: number,
-    attackMax: number,
-    defense: number,
-    critChance: number,
-    evasion: number,
+  health: number,
+  maxHealth: number,
+  mana: number,
+  maxMana: number,
+  attackMin: number,
+  attackMax: number,
+  defense: number,
+  critChance: number,
+  evasion: number,
 }
 
 export interface ClassConfig {
-    equipment: Equipment
+  equipment: Equipment
 }
 
 export interface Ability {
@@ -32,6 +32,7 @@ export interface Ability {
   name: string,
   description: string,
   type: 'damage' | 'utility',
+  target: 'enemy' | 'self',
   cost: {
     ap: number,
     mana?: number,

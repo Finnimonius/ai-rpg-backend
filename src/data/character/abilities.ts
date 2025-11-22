@@ -6,6 +6,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     name: 'Скрытный Удар',
     description: 'Быстрая атака из тени с шансом получить Улику',
     type: 'damage',
+    target: 'enemy',
     cost: { ap: 50 },
     damage: {
       base: 0,
@@ -22,6 +23,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     name: 'Меткий Выпад',
     description: 'Точный удар с увеличенным шансом критического попадания',
     type: 'damage',
+    target: 'enemy',
     cost: { ap: 60 },
     damage: {
       base: 0,
@@ -38,6 +40,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     name: 'Отвлекающий Маневр',
     description: 'Оглушает врага на 1 ход',
     type: 'utility',
+    target: 'enemy',
     cost: { ap: 40, mana: 20 },
     effects: [
       { type: 'STUN', duration: 1 }
