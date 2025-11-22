@@ -4,6 +4,12 @@ export interface CombatState {
     state: 'active' | 'victory' | 'defeat' | 'fled';
     turn: 'player' | 'enemy';
     turnNumber: number;
-    playerHealth: number;
     enemyHealth: number;
+}
+
+export interface CombatAction {
+    type: 'ability' | 'attack' | 'item';
+    abilityId?: string;
+    itemId?: string;
+    target: 'enemy' | 'self';
 }

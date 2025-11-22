@@ -8,6 +8,8 @@ import { NotFoundError } from "../errors/AppError";
 import { MoveToLocationDto } from "../dtos/game/MoveToLocationDto";
 import { generateEvent, getRandomEvent } from "../utils/generators/event-generator";
 import { storyCacheService } from "./storyCacheService";
+import { characterService } from "./characterService";
+import { combatService } from "./combatService";
 
 export const gameService = {
     async createGame(userId: string, createData: CreateGameDto): Promise<Game> {
@@ -75,6 +77,15 @@ export const gameService = {
 
             const randomEvent = getRandomEvent();
             const currentEvent = generateEvent(randomEvent);
+            if (currentEvent.eventType === 'combat') {
+                const character = await characterService.getCharacter(userId);
+                if (!character) throw new Error("Персонаж не найден");
+
+                const combatData = await combatService.generateCombat(game.currentDungeon, character.level);
+                currentEvent.enemy = combatData.enemy;
+                currentEvent.combatState = combatData.combatState;
+            }
+
             if (!currentEvent) throw new NotFoundError("Событие");
 
             const aiPrompt = `Игрок направляется на ${directionName}. 

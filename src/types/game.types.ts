@@ -20,7 +20,8 @@ export type CurrentEvent = {
     id: string,
     title: string,
     description: string,
-    // Treasure - переделать под общий тип
+
+    // Treasure - переделать под общий тип наград
     container?: TreasureType[],
     rewardBox?: TreasureType,
     reward?: AnyItem,

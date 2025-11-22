@@ -17,6 +17,20 @@ export function generateEvent(type: EventType) {
     switch (type) {
         case 'treasure':
             return generateTreasureEvent()
+        case 'combat':
+            return generateCombatEvent()
+    }
+}
+
+function generateCombatEvent(): CurrentEvent {
+    return {
+        eventType: 'combat',
+        id: 'combat_' + Date.now(),
+        title: 'Встреча с врагом',
+        description: 'На вашем пути появился противник!',
+        isOpened: false,
+        isTaken: false,
+        isSkipped: false
     }
 }
 
@@ -28,7 +42,7 @@ function generateTreasureEvent(): CurrentEvent {
     const treasureReward = getRandomTreasureReward(treasureContainer.rewards);
 
     const eligibleItems = getEligibleItems(treasureReward);
-    
+
     if (eligibleItems.length === 0) {
         throw new Error(`Предметы не найдены для ${treasureReward.type}${treasureReward.category ? ` категория: ${treasureReward.category}` : ''}`);
     }
@@ -70,7 +84,7 @@ function groupItemsByRarity(items: AnyItem[]): Record<Rarity, AnyItem[]> {
 function getEligibleItems(treasureReward: Treasure): AnyItem[] {
     const itemsByRarity = ALL_ITEMS_BY_TYPE_AND_RARITY[treasureReward.type];
     const allItems = Object.values(itemsByRarity).flat();
-    
+
     return allItems.filter(item => {
         if (treasureReward.type === 'shopItem' && treasureReward.category) {
             if (treasureReward.category === 'any') return true;
@@ -83,7 +97,7 @@ function getEligibleItems(treasureReward: Treasure): AnyItem[] {
 function selectRarityByWeight(): Rarity {
     const rarities = Object.keys(GAME_CONFIG.RARITY_CHANCES) as Rarity[];
     const chances = Object.values(GAME_CONFIG.RARITY_CHANCES);
-    
+
     const totalChance = chances.reduce((sum, chance) => sum + chance, 0);
     const random = Math.random() * totalChance;
 
@@ -101,19 +115,19 @@ function selectRarityByWeight(): Rarity {
 function findAvailableRarity(itemsByRarity: Record<Rarity, AnyItem[]>, originalRarity: Rarity): Rarity {
     const rarityOrder = GAME_CONFIG.RARITY_ORDER;
     const originalIndex = rarityOrder.indexOf(originalRarity);
-    
+
     for (let i = originalIndex - 1; i >= 0; i--) {
         if (itemsByRarity[rarityOrder[i]]?.length > 0) {
             return rarityOrder[i];
         }
     }
-    
+
     for (let i = originalIndex + 1; i < rarityOrder.length; i++) {
         if (itemsByRarity[rarityOrder[i]]?.length > 0) {
             return rarityOrder[i];
         }
     }
-    
+
     return Object.keys(itemsByRarity).find(r => itemsByRarity[r as Rarity]?.length > 0) as Rarity;
 }
 
