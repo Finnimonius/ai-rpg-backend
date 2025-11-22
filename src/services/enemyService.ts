@@ -35,7 +35,6 @@ export const enemyService = {
             experience: 0,
             gold: enemyCalculator.calculateGold(template, level),
             souls: enemyCalculator.calculateSouls(template, level)
-
         }
     },
 
