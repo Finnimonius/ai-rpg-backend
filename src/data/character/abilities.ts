@@ -8,6 +8,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     type: 'damage',
     target: 'enemy',
     cost: { ap: 50 },
+    level: 1,
     damage: {
       base: 0,
       multiplier: 1.1,
@@ -25,6 +26,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     type: 'damage',
     target: 'enemy',
     cost: { ap: 60 },
+    level: 3,
     damage: {
       base: 0,
       multiplier: 1.3,
@@ -42,6 +44,7 @@ export const GREY_WANDERER_ABILITIES: Ability[] = [
     type: 'utility',
     target: 'enemy',
     cost: { ap: 40, mana: 20 },
+    level: 5,
     effects: [
       { type: 'STUN', duration: 1 }
     ]

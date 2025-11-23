@@ -18,6 +18,7 @@ import { GAME_CONFIG } from "../config/game-config";
 import { AddItemToInventory } from "../dtos/character/AddItemToInventoryDto";
 import { NotFoundError, ValidationError, InventoryFullError, EquipmentError } from '../errors/AppError';
 import { BACKGROUNDS } from "../data/character/backgrounds";
+import { ALL_ABILITIES } from "../data/character/allAbilities";
 
 
 export const characterService = {
@@ -63,7 +64,7 @@ export const characterService = {
             craftingMaterials: { wood: 0, ore: 0, leather: 0, herbs: 0, crystals: 0, relics: 0 },
             inventory: startingInventory,
             equipment: startingEquipment,
-            learnedAbilities: characterClass.abilities.filter(a => a.level === 1).map(a => a.id)
+            learnedAbilities: characterClass.abilities.filter(a => a.level === 1)
         }
 
         return characterRepository.createCharacter(characterData)

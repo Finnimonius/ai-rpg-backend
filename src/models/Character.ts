@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { BaseStats, DerivedStats } from "../types/character.types";
+import { Ability, BaseStats, DerivedStats } from "../types/character.types";
 import { Equipment } from "../types/inventory.types";
 import { CraftingMaterials, Currency } from "../types/currency.types";
 
@@ -18,5 +18,5 @@ export interface Character {
     craftingMaterials: CraftingMaterials,
     inventory: Array<{ itemId: string | null, quantity: number }>,
     equipment: Equipment,
-    learnedAbilities: string[]
+    learnedAbilities: Ability[]
 }

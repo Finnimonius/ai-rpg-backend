@@ -38,6 +38,7 @@ export interface Ability {
     mana?: number,
     leads?: number,
   };
+  level: number,
   damage?: {
     base: number,
     multiplier: number,

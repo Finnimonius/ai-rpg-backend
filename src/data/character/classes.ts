@@ -1,3 +1,5 @@
+import { GREY_WANDERER_ABILITIES } from "./abilities";
+
 export const CLASSES = [
     {
     id: 'grey_wanderer' as const,
@@ -22,19 +24,6 @@ export const CLASSES = [
     armorTypes: ['light', 'cloth'],
     resource: 'leads' as const,
 
-    abilities: [
-      {
-        id: 'stealth_strike',
-        level: 1,
-      },
-      {
-        id: 'precise_strike',
-        level: 3,
-      },
-      {
-        id: 'distracting_move',
-        level: 5,
-      }
-    ]
+    abilities: GREY_WANDERER_ABILITIES
   }
 ];
